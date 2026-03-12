@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mysticloak</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Use the base nav bar */
+    .brand-tagline {
+      display: none;
+    }
+
+    /* ============================================
+       PRODUCT GRID - Immediately below header
+       ============================================ */
+    .listings {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 2rem 4rem;
+    }
+
+    .listings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .listing-card {
+      text-decoration: none;
+      display: block;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .listing-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .listing-card:hover .listing-image img {
+      transform: scale(1.08);
+    }
+
+    .listing-card:hover .listing-name {
+      color: var(--gold-light);
+    }
+
+    .listing-image {
+      width: 100%;
+      aspect-ratio: 1;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(15, 39, 68, 0.6) 0%, rgba(45, 27, 61, 0.4) 100%);
+      border: 1px solid rgba(201, 162, 39, 0.1);
+      position: relative;
+    }
+
+    .listing-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .listing-image .placeholder-icon {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--silver);
+      font-size: 2.5rem;
+      opacity: 0.3;
+    }
+
+    .listing-image .sold-badge {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      background: rgba(61, 26, 42, 0.9);
+      color: var(--pearl);
+      padding: 0.25rem 0.6rem;
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      border: 1px solid var(--ruby-glow);
+    }
+
+    .listing-info {
+      padding: 0.75rem 0.25rem;
+      text-align: center;
+    }
+
+    .listing-name {
+      color: var(--pearl);
+      font-size: 0.95rem;
+      font-weight: normal;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.25rem;
+      transition: color 0.3s ease;
+    }
+
+    .listing-price {
+      color: var(--gold);
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    /* ============================================
+       AUTO-SCROLL CAROUSEL ROW
+       ============================================ */
+    .carousel-section {
+      overflow: hidden;
+      padding: 0 0 2rem;
+      position: relative;
+    }
+
+    .carousel-track {
+      display: flex;
+      gap: 1.5rem;
+      animation: scrollCarousel 30s linear infinite;
+      width: max-content;
+    }
+
+    .carousel-track:hover {
+      animation-play-state: paused;
+    }
+
+    .carousel-card {
+      flex-shrink: 0;
+      width: 380px;
+      text-decoration: none;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .carousel-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .carousel-card .listing-image {
+      width: 380px;
+      height: 380px;
+      aspect-ratio: auto;
+    }
+
+    @keyframes scrollCarousel {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ============================================
+       RESPONSIVE
+       ============================================ */
+    @media (max-width: 900px) {
+      .brand-name {
+        font-size: 1.8rem;
+        letter-spacing: 4px;
+      }
+
+      .brand-logo {
+        width: 90px;
+      }
+
+      .listings-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+
+      .carousel-card {
+        width: 220px;
+      }
+
+      .carousel-card .listing-image {
+        width: 220px;
+        height: 220px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .listings-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="magical-bg"></div>
+
+  <nav>
+    <a href="index.html" class="logo"><img src="images/brand/mysticloak-logo-detailed.png" alt="Mysticloak" class="logo-img"><span class="logo-text">Mysticloak</span></a>
+    <div class="nav-links">
+      <a href="shop.html">Products</a>
+      <a href="faq.html">FAQ</a>
+      <a href="about.html">About</a>
+      <a href="connect.html">Connect</a>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Auto-scrolling carousel -->
+    <section class="carousel-section" id="carousel-section">
+      <div class="carousel-track" id="carousel-track"></div>
+    </section>
+
+    <!-- Full product grid -->
+    <section class="listings">
+      <div class="listings-grid" id="listings-grid"></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="social-icons">
+      <a href="https://instagram.com/yoyopbo" target="_blank" class="social-link" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </a>
+      <a href="https://linktr.ee/Mysticloak" target="_blank" class="social-link" aria-label="Linktree">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.953 15.066l-.038-4.101 4.095-.004-.002-4.946L7.953.947l4.046-.005.002 4.946 4.095-.004-.002 4.946-4.095.004.002 4.068-4.048.004zm-.046 4.079l4.095-.004.002 4.946-4.095.004-.002-4.946zm4.095-4.083l4.095-.004.002 4.946-4.095.004-.002-4.946z"/></svg>
+      </a>
+    </div>
+    <p>&copy; 2026 Mysticloak &middot; <a href="https://azmyth.com">by Azmyth</a></p>
+    <p class="footer-quote">each piece holds a spell, if you let it</p>
+  </footer>
+
+  <script src="js/products.js"></script>
+  <script src="js/magic.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const grid = document.getElementById('listings-grid');
+      const track = document.getElementById('carousel-track');
+
+      // Build a product card
+      function buildCard(product, className) {
+        const card = document.createElement('a');
+        card.href = 'product.html?slug=' + product.slug;
+        card.className = className;
+
+        const hasImage = product.images && product.images.length > 0;
+
+        card.innerHTML = `
+          <div class="listing-image">
+            ${hasImage
+              ? `<img src="${product.images[0]}" alt="${product.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="placeholder-icon" style="display:none">\u2726</div>`
+              : '<div class="placeholder-icon">\u2726</div>'
+            }
+            ${!product.inStock ? '<span class="sold-badge">Sold</span>' : ''}
+          </div>
+          <div class="listing-info">
+            <h3 class="listing-name">${product.name}</h3>
+            <p class="listing-price">${formatPrice(product.price)}</p>
+          </div>
+        `;
+        return card;
+      }
+
+      // Auto-scrolling carousel — duplicate products for seamless loop
+      if (track && PRODUCTS.length > 0) {
+        const carouselProducts = [...PRODUCTS, ...PRODUCTS];
+        carouselProducts.forEach(product => {
+          track.appendChild(buildCard(product, 'carousel-card'));
+        });
+      }
+
+      // Full product grid below
+      if (grid) {
+        PRODUCTS.forEach(product => {
+          grid.appendChild(buildCard(product, 'listing-card'));
+        });
+      }
+    });
+  </script>
+</body>
+</html>

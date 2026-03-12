@@ -1,0 +1,448 @@
+/* ============================================
+   DOORS UI - Work With Me Page
+   ============================================ */
+
+.doors-container {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+}
+
+/* Individual Door */
+.door {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.door:hover {
+  transform: translateY(-5px);
+}
+
+.door-frame {
+  width: 120px;
+  height: 180px;
+  background: linear-gradient(135deg, #8b7355 0%, #6b5344 50%, #4a3728 100%);
+  border: 4px solid #b8860b;
+  border-radius: 8px 8px 0 0;
+  padding: 6px;
+  position: relative;
+  box-shadow:
+    inset 0 0 15px rgba(0, 0, 0, 0.5),
+    0 5px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 1px #daa520;
+  overflow: hidden;
+}
+
+/* Brass corner accents */
+.door-frame::before,
+.door-frame::after {
+  content: '✧';
+  position: absolute;
+  color: #daa520;
+  font-size: 0.6rem;
+  text-shadow: 0 0 5px rgba(218, 165, 32, 0.8);
+  z-index: 5;
+}
+
+.door-frame::before {
+  top: 2px;
+  left: 4px;
+}
+
+.door-frame::after {
+  top: 2px;
+  right: 4px;
+}
+
+.door-panel {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(180deg,
+    #5d4e37 0%,
+    #4a3f2f 20%,
+    #3d3426 50%,
+    #4a3f2f 80%,
+    #5d4e37 100%
+  );
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  overflow: hidden;
+  transform-origin: left center;
+  transition: transform 0.4s ease;
+}
+
+/* Wood grain texture */
+.door-wood {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(0, 0, 0, 0.1) 3px,
+      rgba(0, 0, 0, 0.1) 4px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 20px,
+      rgba(139, 115, 85, 0.15) 20px,
+      rgba(139, 115, 85, 0.15) 22px
+    );
+  pointer-events: none;
+}
+
+/* Door ornaments */
+.door-ornament {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #b8860b;
+  font-size: 1.2rem;
+  text-shadow: 0 0 10px rgba(184, 134, 11, 0.6);
+  z-index: 2;
+}
+
+.door-ornament.top {
+  top: 15px;
+}
+
+.door-ornament.bottom {
+  bottom: 15px;
+  transform: translateX(-50%) rotate(180deg);
+}
+
+/* Door handle */
+.door-handle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 22px;
+  background: linear-gradient(135deg, #daa520 0%, #b8860b 50%, #8b6914 100%);
+  border-radius: 3px;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.3),
+    0 2px 4px rgba(0, 0, 0, 0.4);
+  z-index: 3;
+}
+
+.door-handle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 4px;
+  height: 4px;
+  background: #2a1f14;
+  border-radius: 50%;
+}
+
+/* Light behind door (jewel tones based on data-color) */
+.door-light {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ruby light */
+[data-color="ruby"] .door-light {
+  background: radial-gradient(ellipse at left center,
+    rgba(220, 20, 60, 0.9) 0%,
+    rgba(178, 34, 34, 0.7) 30%,
+    rgba(139, 0, 0, 0.4) 60%,
+    transparent 100%
+  );
+}
+
+/* Emerald light */
+[data-color="emerald"] .door-light {
+  background: radial-gradient(ellipse at left center,
+    rgba(46, 139, 87, 0.9) 0%,
+    rgba(34, 139, 34, 0.7) 30%,
+    rgba(0, 100, 0, 0.4) 60%,
+    transparent 100%
+  );
+}
+
+/* Amethyst light */
+[data-color="amethyst"] .door-light {
+  background: radial-gradient(ellipse at left center,
+    rgba(148, 103, 189, 0.9) 0%,
+    rgba(138, 43, 226, 0.7) 30%,
+    rgba(75, 0, 130, 0.4) 60%,
+    transparent 100%
+  );
+}
+
+/* Sapphire light */
+[data-color="sapphire"] .door-light {
+  background: radial-gradient(ellipse at left center,
+    rgba(65, 105, 225, 0.9) 0%,
+    rgba(0, 71, 171, 0.7) 30%,
+    rgba(0, 51, 102, 0.4) 60%,
+    transparent 100%
+  );
+}
+
+/* Gold light */
+[data-color="gold"] .door-light {
+  background: radial-gradient(ellipse at left center,
+    rgba(255, 215, 0, 0.9) 0%,
+    rgba(218, 165, 32, 0.7) 30%,
+    rgba(184, 134, 11, 0.4) 60%,
+    transparent 100%
+  );
+}
+
+/* Door label */
+.door-label {
+  margin-top: 0.75rem;
+  color: var(--silver);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  text-align: center;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+/* ============================================
+   HOVER STATE - Door cracks open
+   ============================================ */
+.door:hover .door-panel {
+  transform: perspective(600px) rotateY(-25deg);
+}
+
+.door:hover .door-light {
+  opacity: 1;
+}
+
+.door:hover .door-label {
+  color: var(--gold);
+  text-shadow: 0 0 15px rgba(201, 162, 39, 0.5);
+}
+
+/* Light spill effect outside door */
+.door:hover .door-frame::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: -20px;
+  width: 30px;
+  height: 80%;
+  opacity: 0.6;
+  filter: blur(10px);
+  z-index: -1;
+}
+
+[data-color="ruby"]:hover .door-frame {
+  box-shadow:
+    inset 0 0 15px rgba(0, 0, 0, 0.5),
+    0 5px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 1px #daa520,
+    -15px 0 30px rgba(220, 20, 60, 0.4),
+    -5px 0 15px rgba(220, 20, 60, 0.6);
+}
+
+[data-color="emerald"]:hover .door-frame {
+  box-shadow:
+    inset 0 0 15px rgba(0, 0, 0, 0.5),
+    0 5px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 1px #daa520,
+    -15px 0 30px rgba(46, 139, 87, 0.4),
+    -5px 0 15px rgba(46, 139, 87, 0.6);
+}
+
+[data-color="amethyst"]:hover .door-frame {
+  box-shadow:
+    inset 0 0 15px rgba(0, 0, 0, 0.5),
+    0 5px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 1px #daa520,
+    -15px 0 30px rgba(148, 103, 189, 0.4),
+    -5px 0 15px rgba(148, 103, 189, 0.6);
+}
+
+[data-color="sapphire"]:hover .door-frame {
+  box-shadow:
+    inset 0 0 15px rgba(0, 0, 0, 0.5),
+    0 5px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 1px #daa520,
+    -15px 0 30px rgba(65, 105, 225, 0.4),
+    -5px 0 15px rgba(65, 105, 225, 0.6);
+}
+
+[data-color="gold"]:hover .door-frame {
+  box-shadow:
+    inset 0 0 15px rgba(0, 0, 0, 0.5),
+    0 5px 20px rgba(0, 0, 0, 0.4),
+    0 0 0 1px #daa520,
+    -15px 0 30px rgba(255, 215, 0, 0.4),
+    -5px 0 15px rgba(255, 215, 0, 0.6);
+}
+
+/* ============================================
+   ACTIVE STATE - Door selected
+   ============================================ */
+.door.active .door-panel {
+  transform: perspective(600px) rotateY(-45deg);
+}
+
+.door.active .door-light {
+  opacity: 1;
+}
+
+.door.active .door-label {
+  color: var(--gold-bright);
+  text-shadow: 0 0 20px rgba(201, 162, 39, 0.7);
+}
+
+.door.active .door-frame {
+  border-color: var(--gold-bright);
+}
+
+/* ============================================
+   CONTENT AREA
+   ============================================ */
+.door-content-area {
+  min-height: 0;
+  transition: min-height 0.4s ease;
+}
+
+.door-content-area.has-content {
+  min-height: 200px;
+}
+
+.door-content {
+  display: none;
+  padding: 2.5rem;
+  background: linear-gradient(135deg, rgba(15, 39, 68, 0.4) 0%, rgba(45, 27, 61, 0.3) 100%);
+  border: 1px solid rgba(201, 162, 39, 0.2);
+  margin-bottom: 3rem;
+  animation: fadeSlideIn 0.4s ease;
+  position: relative;
+}
+
+.door-content::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  right: 8px;
+  bottom: 8px;
+  border: 1px solid rgba(201, 162, 39, 0.08);
+  pointer-events: none;
+}
+
+.door-content.active {
+  display: block;
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.door-content h2 {
+  color: var(--gold);
+  font-weight: normal;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  letter-spacing: 1px;
+}
+
+.door-content .art-link {
+  margin-bottom: 1.5rem;
+  display: inline-block;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+  .doors-container {
+    gap: 1rem;
+  }
+
+  .door-frame {
+    width: 90px;
+    height: 140px;
+  }
+
+  .door-ornament {
+    font-size: 0.9rem;
+  }
+
+  .door-ornament.top {
+    top: 10px;
+  }
+
+  .door-ornament.bottom {
+    bottom: 10px;
+  }
+
+  .door-label {
+    font-size: 0.75rem;
+  }
+
+  .door-content {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 500px) {
+  .doors-container {
+    gap: 0.75rem;
+  }
+
+  .door-frame {
+    width: 60px;
+    height: 100px;
+    border-width: 2px;
+    padding: 3px;
+  }
+
+  .door-ornament {
+    font-size: 0.7rem;
+  }
+
+  .door-ornament.top {
+    top: 5px;
+  }
+
+  .door-ornament.bottom {
+    bottom: 5px;
+  }
+
+  .door-handle {
+    width: 6px;
+    height: 14px;
+    right: 6px;
+  }
+
+  .door-label {
+    font-size: 0.65rem;
+  }
+}

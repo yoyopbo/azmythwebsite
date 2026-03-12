@@ -410,6 +410,18 @@ body {
    ORNATE BAROQUE PICTURE FRAME
    ============================================ */
 
+/* Simple elegant frame */
+.simple-frame {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  bottom: 15px;
+  pointer-events: none;
+  z-index: 1000;
+  border: 1px solid rgba(201, 162, 39, 0.4);
+}
+
 /* Main ornate frame around entire page */
 .ornate-frame {
   position: fixed;
@@ -641,14 +653,7 @@ nav {
 }
 
 nav::before {
-  content: '✦';
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--gold);
-  font-size: 0.75rem;
-  opacity: 0.6;
+  display: none;
 }
 
 .logo {
@@ -698,15 +703,7 @@ nav::before {
 }
 
 .nav-links a::before {
-  content: '⟡';
-  position: absolute;
-  left: 50%;
-  top: -12px;
-  transform: translateX(-50%) scale(0);
-  color: var(--gold);
-  font-size: 0.5rem;
-  transition: transform 0.3s ease;
-  opacity: 0.7;
+  display: none;
 }
 
 .nav-links a::after {
@@ -734,6 +731,60 @@ nav::before {
 }
 
 /* ============================================
+   HOMEPAGE BACKGROUND IMAGE
+   ============================================ */
+.homepage .magical-bg {
+  display: none;
+}
+
+.hero-bg-image {
+  width: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+.hero-bg-image img {
+  width: 125%;
+  height: auto;
+  display: block;
+  margin-left: -25%;
+}
+
+.homepage .hero {
+  position: relative;
+  min-height: auto;
+  padding: 0;
+}
+
+.homepage .hero .hero-bg-image {
+  position: relative;
+}
+
+.homepage .hero-content {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  max-width: none;
+  margin-left: 0;
+  display: flex;
+  justify-content: center;
+  padding-left: 5%;
+}
+
+.homepage .subtitle {
+  position: relative;
+  left: -2rem;
+  color: #2ecc71;
+  font-size: 1rem;
+}
+
+.homepage {
+  background: var(--deep-night);
+  position: relative;
+}
+
+/* ============================================
    HERO SECTION - MAXIMALIST
    ============================================ */
 .hero {
@@ -743,6 +794,16 @@ nav::before {
   justify-content: center;
   padding: 2rem 4rem;
   position: relative;
+}
+
+.homepage .hero-text {
+  background: radial-gradient(ellipse at center, rgba(45, 27, 61, 0.85) 0%, rgba(45, 27, 61, 0.6) 30%, rgba(15, 39, 68, 0.4) 60%, transparent 80%);
+  padding: 3rem;
+  border: none;
+  backdrop-filter: none;
+  text-align: center;
+  border-radius: 50%;
+  max-width: 450px;
 }
 
 /* Decorative border frame around hero */
@@ -939,11 +1000,20 @@ nav::before {
    ============================================ */
 .hero-text {
   max-width: 500px;
+  text-align: center;
 }
 
 .hero-text h1 {
+  /* FONT OPTIONS - uncomment one to try:
+   * font-family: 'Cinzel', serif;          -- Regal, ancient Roman
+   * font-family: 'Cormorant', serif;       -- Elegant fantasy
+   * font-family: 'MedievalSharp', cursive; -- Medieval manuscript
+   * font-family: 'Tangerine', cursive;     -- Flowing elvish script
+   * font-family: 'Uncial Antiqua', cursive;-- Celtic/medieval
+   */
+  font-family: 'Cinzel', serif;
   font-size: 4.5rem;
-  font-weight: normal;
+  font-weight: 400;
   color: var(--gold);
   margin-bottom: 0.5rem;
   text-shadow:
@@ -957,20 +1027,7 @@ nav::before {
 
 .hero-text h1::before,
 .hero-text h1::after {
-  content: '❖';
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1rem;
-  opacity: 0.4;
-}
-
-.hero-text h1::before {
-  left: -30px;
-}
-
-.hero-text h1::after {
-  right: -30px;
+  display: none;
 }
 
 .subtitle {
@@ -979,17 +1036,26 @@ nav::before {
   font-style: italic;
   margin-bottom: 1.5rem;
   letter-spacing: 3px;
-  text-shadow: 0 0 30px rgba(122, 82, 153, 0.5);
+  white-space: nowrap;
+  text-shadow: 0 0 20px rgba(122, 82, 153, 0.5);
+}
+
+.subtitle-star {
+  color: var(--gold);
+  font-style: normal;
+  font-size: 0.8rem;
+  text-shadow: 0 0 10px rgba(201, 162, 39, 0.6);
+  margin: 0 0.3rem;
+  vertical-align: middle;
 }
 
 .intro {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   color: var(--silver);
   margin-bottom: 2.5rem;
-  line-height: 1.9;
-  position: relative;
-  padding-left: 1.5rem;
-  border-left: 2px solid rgba(201, 162, 39, 0.3);
+  line-height: 1.7;
+  font-style: italic;
+  opacity: 0.8;
 }
 
 /* ============================================
@@ -998,6 +1064,7 @@ nav::before {
 .cta-buttons {
   display: flex;
   gap: 1.5rem;
+  justify-content: center;
 }
 
 .btn {
@@ -1009,26 +1076,10 @@ nav::before {
   position: relative;
 }
 
-/* Ornate button frame corners */
+/* Clean button style */
 .btn::before,
 .btn::after {
-  content: '❧';
-  position: absolute;
-  font-size: 0.9rem;
-  color: var(--gold);
-  opacity: 0.7;
-  transition: all 0.3s ease;
-}
-
-.btn::before {
-  top: -2px;
-  left: 2px;
-}
-
-.btn::after {
-  bottom: -2px;
-  right: 2px;
-  transform: rotate(180deg);
+  display: none;
 }
 
 .btn.primary {
@@ -1125,6 +1176,16 @@ nav::before {
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
+}
+
+.homepage nav {
+  position: relative;
+  z-index: 20;
+}
+
+.homepage footer {
+  position: relative;
+  z-index: 10;
 }
 
 /* Section divider */
@@ -1245,14 +1306,7 @@ footer {
 }
 
 footer::before {
-  content: '✦';
-  position: absolute;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  color: var(--gold);
-  font-size: 0.75rem;
-  opacity: 0.5;
+  display: none;
 }
 
 footer a {
@@ -1265,6 +1319,43 @@ footer a:hover {
   text-shadow: 0 0 20px rgba(201, 162, 39, 0.5);
 }
 
+.footer-quote {
+  font-size: 0.7rem;
+  font-style: italic;
+  opacity: 0.6;
+  margin-top: 0.5rem;
+  color: var(--silver);
+}
+
+/* Social Icons */
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--gold);
+  transition: all 0.3s ease;
+}
+
+.social-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.social-link:hover {
+  color: var(--gold-bright);
+  transform: translateY(-2px);
+  filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.6));
+}
+
 /* ============================================
    FLOATING MAGICAL ELEMENTS
    ============================================ */
@@ -1272,6 +1363,194 @@ footer a:hover {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-10px) rotate(2deg); }
 }
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+/* ============================================
+   INTERACTIVE MAGIC EFFECTS
+   ============================================ */
+
+/* Floating orbs container */
+.orb-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+}
+
+/* Individual floating orbs */
+.floating-orb {
+  position: absolute;
+  border-radius: 50%;
+  animation: orbFloat linear infinite;
+  opacity: 0.7;
+}
+
+@keyframes orbFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(calc(-50px + 100px * var(--random, 0.5)), -50vh) scale(1.2);
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(calc(50px - 100px * var(--random, 0.5)), -100vh) scale(0.8);
+    opacity: 0;
+  }
+}
+
+/* Make each orb drift differently */
+.floating-orb:nth-child(odd) {
+  animation-name: orbFloatAlt;
+}
+
+@keyframes orbFloatAlt {
+  0% {
+    transform: translate(0, 0) scale(0.8);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.8;
+  }
+  50% {
+    transform: translate(80px, -40vh) scale(1.1);
+    opacity: 1;
+  }
+  85% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-30px, -100vh) scale(1);
+    opacity: 0;
+  }
+}
+
+.floating-orb:nth-child(3n) {
+  animation-name: orbFloatWide;
+}
+
+@keyframes orbFloatWide {
+  0% {
+    transform: translate(0, 100vh) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate(-100px, 50vh) scale(1.3);
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translate(50px, 0) scale(0.9);
+    opacity: 0;
+  }
+}
+
+/* Click burst particles */
+.click-burst {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1004;
+  animation: burstOut 0.8s ease-out forwards;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes burstOut {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Cursor glow - soft jewel light */
+.cursor-glow {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    circle,
+    rgba(201, 162, 39, 0.15) 0%,
+    rgba(92, 61, 110, 0.08) 25%,
+    rgba(26, 74, 122, 0.05) 50%,
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+}
+
+/* Sparkle particles */
+.magic-sparkle {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1003;
+  animation: sparkleFloat 1s ease-out forwards;
+}
+
+@keyframes sparkleFloat {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0) translateY(-30px);
+  }
+}
+
+/* Smooth star movement */
+.star {
+  transition: transform 0.3s ease-out;
+}
+
+/* Smooth jewel movement */
+.jewel {
+  transition: transform 0.4s ease-out;
+}
+
+/* Scroll fade-in animations */
+.fade-in-element {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Staggered fade for cards */
+.fade-in-visible:nth-child(1) { transition-delay: 0s; }
+.fade-in-visible:nth-child(2) { transition-delay: 0.1s; }
+.fade-in-visible:nth-child(3) { transition-delay: 0.2s; }
+.fade-in-visible:nth-child(4) { transition-delay: 0.3s; }
 
 /* ============================================
    RESPONSIVE

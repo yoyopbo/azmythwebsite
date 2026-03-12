@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmed | Mysticloak</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    .confirmation {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem;
+    }
+
+    .confirmation-content {
+      max-width: 500px;
+    }
+
+    .confirmation-icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      color: var(--gold);
+      text-shadow: 0 0 30px rgba(201, 162, 39, 0.5);
+    }
+
+    .confirmation-content h1 {
+      font-size: 2.5rem;
+      font-weight: normal;
+      color: var(--gold);
+      margin-bottom: 1rem;
+      letter-spacing: 3px;
+      text-shadow:
+        0 0 30px rgba(201, 162, 39, 0.4),
+        0 0 60px rgba(201, 162, 39, 0.2);
+    }
+
+    .confirmation-content p {
+      color: var(--silver);
+      line-height: 1.8;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .confirmation-content .btn {
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="magical-bg"></div>
+  <div class="simple-frame"></div>
+
+  <nav>
+    <a href="index.html" class="logo"><img src="images/brand/mysticloak-logo-detailed.png" alt="Mysticloak" class="logo-img"><span class="logo-text">Mysticloak</span></a>
+    <div class="nav-links">
+      <a href="shop.html">Products</a>
+      <a href="faq.html">FAQ</a>
+      <a href="about.html">About</a>
+      <a href="connect.html">Connect</a>
+    </div>
+  </nav>
+
+  <main class="confirmation">
+    <div class="confirmation-content">
+      <div class="confirmation-icon">&#10024;</div>
+      <h1>Order Confirmed</h1>
+      <p>
+        Your enchantment is on its way. Thank you for your purchase!
+        You'll receive a confirmation email from Stripe with your order details.
+      </p>
+      <p>
+        Each piece is prepared with care and intention.
+        Expect shipping within 3&ndash;5 business days.
+      </p>
+      <a href="shop.html" class="btn secondary">Continue Browsing</a>
+    </div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Mysticloak &middot; <a href="https://azmyth.com">by Azmyth</a></p>
+    <p class="footer-quote">each piece holds a spell, if you let it</p>
+  </footer>
+
+  <script src="js/magic.js"></script>
+</body>
+</html>

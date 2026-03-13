@@ -60,6 +60,21 @@
       return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
+    function renderMediaSrc(src) {
+      if (!src) return '';
+      if (src.includes('youtube') || src.includes('youtu.be')) {
+        const id = src.match(/(?:v=|youtu\.be\/)([^&?]+)/)?.[1];
+        return id ? `<div class="blog-media"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen></iframe></div>` : '';
+      } else if (src.includes('vimeo')) {
+        const id = src.match(/vimeo\.com\/(\d+)/)?.[1];
+        return id ? `<div class="blog-media"><iframe src="https://player.vimeo.com/video/${id}" frameborder="0" allowfullscreen></iframe></div>` : '';
+      } else if (/\.(mp4|webm|ogg|mov)$/i.test(src)) {
+        return `<div class="blog-media"><video controls><source src="${src}"></video></div>`;
+      } else {
+        return `<div class="blog-media"><img src="${src}" alt=""></div>`;
+      }
+    }
+
     function renderPosts(posts) {
       const section = document.getElementById('blog-section');
       const empty = document.getElementById('blog-empty');
@@ -75,30 +90,28 @@
         const article = document.createElement('article');
         article.className = 'blog-post';
 
-        let mediaHtml = '';
-        if (post.media) {
-          if (post.media.includes('youtube') || post.media.includes('youtu.be')) {
-            const id = post.media.match(/(?:v=|youtu\.be\/)([^&?]+)/)?.[1];
-            if (id) mediaHtml = `<div class="blog-media"><iframe src="https://www.youtube.com/embed/${id}" frameborder="0" allowfullscreen></iframe></div>`;
-          } else if (post.media.includes('vimeo')) {
-            const id = post.media.match(/vimeo\.com\/(\d+)/)?.[1];
-            if (id) mediaHtml = `<div class="blog-media"><iframe src="https://player.vimeo.com/video/${id}" frameborder="0" allowfullscreen></iframe></div>`;
-          } else if (/\.(mp4|webm|ogg|mov)$/i.test(post.media)) {
-            mediaHtml = `<div class="blog-media"><video controls><source src="${post.media}"></video></div>`;
-          } else {
-            mediaHtml = `<div class="blog-media"><img src="${post.media}" alt=""></div>`;
-          }
+        let contentHtml = '';
+        if (post.blocks && post.blocks.length > 0) {
+          contentHtml = post.blocks.map(block => {
+            if (block.type === 'text') {
+              const paras = block.content.split('\n').map(p => p.trim() ? `<p>${escHtml(p)}</p>` : '').join('');
+              return `<div class="blog-post-body">${paras}</div>`;
+            } else {
+              return renderMediaSrc(block.src);
+            }
+          }).join('');
+        } else {
+          // Backward compat: old body + media format
+          const bodyHtml = (post.body || '').split('\n').map(p => p.trim() ? `<p>${escHtml(p)}</p>` : '').join('');
+          contentHtml = `<div class="blog-post-body">${bodyHtml}</div>` + renderMediaSrc(post.media);
         }
-
-        const bodyHtml = post.body.split('\n').map(p => p ? `<p>${escHtml(p)}</p>` : '').join('');
 
         article.innerHTML = `
           <div class="blog-post-header">
             <h2 class="blog-post-title">${escHtml(post.title)}</h2>
             <span class="blog-post-date">${post.date || ''}</span>
           </div>
-          <div class="blog-post-body">${bodyHtml}</div>
-          ${mediaHtml}
+          ${contentHtml}
         `;
         section.appendChild(article);
       });

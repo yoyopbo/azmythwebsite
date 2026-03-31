@@ -1,13 +1,93 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Who I Am | Azmyth</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="pages.css">
+  <style>
+    .fun-facts-section {
+      max-width: 900px;
+      margin: 4rem auto 2rem;
+      padding: 0 2rem;
+      text-align: center;
+    }
+    .fun-facts-section h2 {
+      font-size: 1.6rem;
+      color: #c9a227;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+    .fun-facts-section .fun-facts-label {
+      color: #a8a4b8;
+      font-style: italic;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+    .ticker-wrapper {
+      border-top: 1px solid rgba(201, 162, 39, 0.3);
+      border-bottom: 1px solid rgba(201, 162, 39, 0.3);
+      padding: 1.25rem 0;
+      overflow: hidden;
+      position: relative;
+      background: linear-gradient(135deg, rgba(45, 27, 61, 0.3), rgba(15, 39, 68, 0.3));
+    }
+    .ticker-wrapper::before,
+    .ticker-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .ticker-wrapper::before {
+      left: 0;
+      background: linear-gradient(to right, var(--void), transparent);
+    }
+    .ticker-wrapper::after {
+      right: 0;
+      background: linear-gradient(to left, var(--void), transparent);
+    }
+    .ticker-track {
+      display: flex;
+      width: max-content;
+      animation: scroll-left 70s linear infinite;
+    }
+    .ticker-track:hover {
+      animation-play-state: paused;
+    }
+    @keyframes scroll-left {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 0 2rem;
+      white-space: nowrap;
+      color: #e8e4dc;
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+    .ticker-item .sep {
+      color: #c9a227;
+      font-size: 0.7rem;
+    }
+    .ticker-item strong {
+      color: #c9a227;
+      font-style: normal;
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-weight: normal;
+    }
+  </style>
 </head>
 <body>
   <div class="magical-bg"></div>
@@ -21,8 +101,8 @@
       <a href="about.html" class="active">Who I Am</a>
       <a href="hire.html">Work With Me</a>
       <a href="art.html">Art</a>
-      <a href="curiosities.html">Curiosities</a>
       <a href="https://mysticloak.com" target="_blank">Mysticloak</a>
+      <a href="blog.html">Blog</a>
       <a href="connect.html">Connect</a>
     </div>
   </nav>
@@ -43,19 +123,19 @@
 
       <div class="about-text">
         <p class="bio-intro">
-          A multidisciplinary artist, performer, and maker whose work lives at the intersection of the visceral and the beautiful. Based in the Bay Area, Azmyth moves fluidly between Butoh dance, sewing, painting, fire spinning, event production, and interior design — a creative practice that treats the body, the room, and the people in it as a single instrument to play.
+          I'm a multidisciplinary artist, performer, and maker whose work lives at the intersection of the visceral and the beautiful. Based in the Bay Area, I move fluidly between Butoh dance, sewing, painting, fire spinning, event production, and interior design — a creative practice that treats the body, the room, and the people in it as a single instrument to play.
         </p>
         <p>
-          Raised in rural Idaho in a strict Christian household, she broke out at twenty-two and hasn't stopped becoming since. In the Bay Area she has found herself shaped by two very different worlds: rationalists and intellectuals who have sharpened how she thinks, and those who live closer to spirit, body, and feeling. She is a creature of both — carrying the best of each without apology.
+          I was raised in rural Idaho in a strict Christian household, broke out at twenty-two, and haven't stopped becoming since. In the Bay Area I've found myself shaped by two very different worlds: rationalists and intellectuals who have sharpened how I think, and those who live closer to spirit, body, and feeling. I'm a creature of both — carrying the best of each without apology.
         </p>
         <p>
-          Her performance work is rooted in transformation and creature-logic. As an emerging Butoh practitioner, Azmyth draws on deep somatic presence and a commitment to the strange — finding the humanity in the feral. That same sensibility runs through MystiCloak, her line of upcycled wizard cloaks, and her fashion consultation work, both of which start from the same premise: that how we dress is how we inhabit ourselves. Aesthetics have always been essential to her — she dresses to feel magical, and has since she was young. This attunement to beauty isn't decorative; it's how she understands and moves through the world.
+          My performance work is rooted in transformation and creature-logic. As an emerging Butoh practitioner, I draw on deep somatic presence and a commitment to the strange — finding the humanity in the feral. That same sensibility runs through MystiCloak, my line of upcycled wizard cloaks, and my fashion consultation work, both of which start from the same premise: that how we dress is how we inhabit ourselves. Aesthetics have always been essential to me — I dress to feel magical, and have since I was young. This attunement to beauty isn't decorative; it's how I understand and move through the world.
         </p>
         <p>
-          That thread runs through everything she has built: interior design, men's fashion consulting, personal assistance, and — perhaps her longest-running role — professional charismat. A natural extrovert, she has a genuine love for people, strangers included, and a way of making spaces feel worth inhabiting.
+          That thread runs through everything I've built: interior design, men's fashion consulting, personal assistance, and — perhaps my longest-running role — professional charismat. A natural extrovert, I have a genuine love for people, strangers included, and a way of making spaces feel worth inhabiting.
         </p>
         <p>
-          When she's not in the middle of a creative project, she's behind a sewing machine, deep in floor choreography, moving through fusion dance, curating elaborate playlists, at yoga, or doing socially unnecessary impressions.
+          When I'm not in the middle of a creative project, I'm behind a sewing machine, deep in floor choreography, moving through fusion dance, curating elaborate playlists, at yoga, or doing socially unnecessary impressions.
         </p>
       </div>
     </section>
@@ -78,7 +158,33 @@
         </div>
       </div>
     </section>
+    <!-- Fun Facts Ticker -->
+    <section class="fun-facts-section">
+      <h2>Curiosities</h2>
+      <p class="fun-facts-label">Fun Facts</p>
+      <div class="ticker-wrapper">
+        <div class="ticker-track" id="ticker"></div>
+      </div>
+    </section>
   </main>
+
+  <script>
+    const facts = [
+      { label: "Origin",    text: "Grew up in rural Idaho in a strict Christian household. Broke out at twenty-two." },
+      { label: "Fire",      text: "Spins fire. It started as a party trick and became a spiritual practice." },
+      { label: "Cloak",     text: "Makes upcycled wizard cloaks. Not as a bit — as a genuine calling." },
+      { label: "Body",      text: "Emerging Butoh practitioner. Finds the humanity in the feral." },
+      { label: "Voice",     text: "Does socially unnecessary impressions. Unprompted. Often." },
+      { label: "Playlist",  text: "Curates elaborate playlists the way some people write journals." },
+      { label: "Charisma",  text: "Has a way of making strangers feel like they've known me for years." },
+      { label: "Magic",     text: "Has dressed to feel magical since childhood. Aesthetics are how I understand the world." },
+    ];
+    const track = document.getElementById('ticker');
+    const html = facts.map(f =>
+      `<span class="ticker-item"><strong>${f.label}</strong><span class="sep">✦</span>${f.text}<span class="sep">❧</span></span>`
+    ).join('');
+    track.innerHTML = html + html;
+  </script>
 
   <footer>
     <div class="social-icons">

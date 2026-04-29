@@ -172,33 +172,7 @@
         </div>
       </div>
     </section>
-    <!-- Fun Facts Ticker -->
-    <section class="fun-facts-section">
-      <h2>Curiosities</h2>
-      <p class="fun-facts-label">Fun Facts</p>
-      <div class="ticker-wrapper">
-        <div class="ticker-track" id="ticker"></div>
-      </div>
-    </section>
   </main>
-
-  <script>
-    const facts = [
-      { label: "Origin",    text: "Grew up in rural Idaho in a strict Christian household. Broke out at twenty-two." },
-      { label: "Fire",      text: "Spins fire. It started as a party trick and became a spiritual practice." },
-      { label: "Cloak",     text: "Makes upcycled wizard cloaks. Not as a bit — as a genuine calling." },
-      { label: "Body",      text: "Emerging Butoh practitioner. Finds the humanity in the feral." },
-      { label: "Voice",     text: "Does socially unnecessary impressions. Unprompted. Often." },
-      { label: "Playlist",  text: "Curates elaborate playlists the way some people write journals." },
-      { label: "Charisma",  text: "Has a way of making strangers feel like they've known me for years." },
-      { label: "Magic",     text: "Has dressed to feel magical since childhood. Aesthetics are how I understand the world." },
-    ];
-    const track = document.getElementById('ticker');
-    const html = facts.map(f =>
-      `<span class="ticker-item"><strong>${f.label}</strong><span class="sep">✦</span>${f.text}<span class="sep">❧</span></span>`
-    ).join('');
-    track.innerHTML = html + html;
-  </script>
 
   <footer>
     <div class="social-icons">

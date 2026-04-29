@@ -1,30 +1,59 @@
-/* Howl's Bedroom - MAXIMALIST Jewel Tone Theme */
+/* ── Custom Fonts ── */
+@font-face {
+  font-family: 'Sveva';
+  src: url('fonts/Sveva-Versal.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Sveva';
+  src: url('fonts/Sveva-Light.otf') format('opentype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Dark Crystal — Parchment & Fantasy Theme */
 :root {
-  --deep-night: #08080f;
-  --void: #050508;
-  --sapphire: #0f2744;
-  --sapphire-mid: #163557;
-  --sapphire-glow: #1a4a7a;
-  --sapphire-bright: #2d6aa8;
-  --amethyst: #2d1b3d;
-  --amethyst-mid: #3d2452;
-  --amethyst-glow: #5c3d6e;
-  --amethyst-bright: #7a5299;
-  --emerald: #0d2818;
-  --emerald-mid: #143d24;
-  --emerald-glow: #1a5c3a;
-  --ruby: #3d1a2a;
-  --ruby-glow: #5c2a3d;
-  --gold: #c9a227;
-  --gold-mid: #d4af37;
-  --gold-light: #e8c547;
-  --gold-bright: #f5d76e;
-  --gold-pale: #f9e79f;
-  --copper: #b87333;
-  --bronze: #8b6914;
-  --pearl: #e8e4dc;
-  --silver: #a8a4b8;
-  --cream: #f5f0e6;
+  /* Parchment palette */
+  --parchment:      #f0e9d6;
+  --parchment-mid:  #e4d9c0;
+  --parchment-dark: #cfc3a0;
+  --parchment-deep: #b8a97a;
+  --stone:          #d6cdb0;
+
+  /* Ink palette (text) */
+  --ink:            #1e1a12;
+  --ink-mid:        #3d3525;
+  --ink-light:      #6b5e45;
+  --ink-faint:      #9a8c72;
+
+  /* Ornament palette — muted blue-gray like Dark Crystal motifs */
+  --ornament:       #6b7494;
+  --ornament-mid:   #8a90a8;
+  --ornament-light: #adb3c8;
+  --ornament-dark:  #4a5070;
+
+  /* Warm gold for interactive accents */
+  --gold:           #8b6914;
+  --gold-mid:       #a07c20;
+  --gold-light:     #b89030;
+  --gold-bright:    #c9a227;
+
+  /* Legacy aliases so existing code doesn't break */
+  --deep-night:     #f0e9d6;
+  --void:           #f0e9d6;
+  --pearl:          #1e1a12;
+  --silver:         #6b5e45;
+  --cream:          #f5f0e6;
+  --amethyst-bright:#6b7494;
+  --amethyst-glow:  #8a90a8;
+  --emerald-glow:   #5a7060;
+  --gold-pale:      #e8d898;
+  --bronze:         #8b6914;
+  --copper:         #a07c20;
 }
 
 * {
@@ -35,10 +64,10 @@
 
 body {
   font-family: 'Georgia', 'Times New Roman', serif;
-  background: var(--void);
-  color: var(--pearl);
+  background: var(--parchment);
+  color: var(--ink);
   min-height: 100vh;
-  line-height: 1.6;
+  line-height: 1.7;
   overflow-x: hidden;
 }
 
@@ -53,19 +82,15 @@ body {
   height: 100%;
   z-index: -1;
   background:
-    /* Floating orbs of light */
-    radial-gradient(circle at 15% 15%, rgba(201, 162, 39, 0.15) 0%, transparent 20%),
-    radial-gradient(circle at 85% 20%, rgba(92, 61, 110, 0.2) 0%, transparent 25%),
-    radial-gradient(circle at 75% 75%, rgba(26, 74, 122, 0.2) 0%, transparent 30%),
-    radial-gradient(circle at 25% 80%, rgba(26, 92, 58, 0.15) 0%, transparent 25%),
-    radial-gradient(circle at 50% 50%, rgba(201, 162, 39, 0.08) 0%, transparent 40%),
-    /* Deep color pools */
-    radial-gradient(ellipse at 20% 20%, var(--sapphire-mid) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 30%, var(--amethyst-mid) 0%, transparent 50%),
-    radial-gradient(ellipse at 40% 80%, var(--emerald-mid) 0%, transparent 40%),
-    radial-gradient(ellipse at 90% 90%, var(--ruby) 0%, transparent 40%),
-    radial-gradient(ellipse at 60% 40%, var(--sapphire) 0%, transparent 60%),
-    var(--deep-night);
+    /* Parchment grain texture */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.07'/%3E%3C/svg%3E"),
+    /* Warm vignette edges — aged parchment feel */
+    radial-gradient(ellipse at 0% 0%,   rgba(160, 120, 60, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 0%,  rgba(140, 100, 50, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at 0% 100%,  rgba(140, 100, 50, 0.14) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 100%,rgba(160, 120, 60, 0.18) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%,  rgba(255, 248, 220, 0.6)  0%, transparent 70%),
+    var(--parchment);
 }
 
 /* Animated floating particles layer */
@@ -419,7 +444,7 @@ body {
   bottom: 15px;
   pointer-events: none;
   z-index: 1000;
-  border: 1px solid rgba(201, 162, 39, 0.4);
+  border: 1px solid rgba(107, 116, 148, 0.35);
 }
 
 /* Main ornate frame around entire page */
@@ -639,7 +664,7 @@ body::after {
 }
 
 /* ============================================
-   NAVIGATION - ORNATE
+   NAVIGATION
    ============================================ */
 nav {
   display: flex;
@@ -648,8 +673,9 @@ nav {
   padding: 1.5rem 4rem;
   position: relative;
   z-index: 100;
-  border-bottom: 1px solid rgba(201, 162, 39, 0.1);
-  background: linear-gradient(180deg, rgba(8, 8, 15, 0.8) 0%, transparent 100%);
+  border-bottom: 1px solid rgba(107, 116, 148, 0.25);
+  background: rgba(240, 233, 214, 0.92);
+  backdrop-filter: blur(4px);
 }
 
 nav::before {
@@ -657,15 +683,13 @@ nav::before {
 }
 
 .logo {
-  font-size: 2rem;
-  font-weight: bold;
-  color: var(--gold);
+  font-family: 'Sveva', 'Cinzel', serif;
+  font-size: 1.8rem;
+  font-weight: 300;
+  color: var(--ink);
   text-decoration: none;
-  letter-spacing: 3px;
-  text-shadow:
-    0 0 20px rgba(201, 162, 39, 0.5),
-    0 0 40px rgba(201, 162, 39, 0.3),
-    0 0 60px rgba(201, 162, 39, 0.1);
+  letter-spacing: 4px;
+  text-shadow: none;
   position: relative;
 }
 
@@ -675,17 +699,12 @@ nav::before {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--gold);
-  opacity: 0.5;
+  color: var(--ornament);
+  opacity: 0.6;
 }
 
-.logo::before {
-  left: -20px;
-}
-
-.logo::after {
-  right: -20px;
-}
+.logo::before { left: -16px; }
+.logo::after  { right: -16px; }
 
 .nav-links {
   display: flex;
@@ -693,18 +712,18 @@ nav::before {
 }
 
 .nav-links a {
-  color: var(--silver);
+  color: var(--ink-light);
   text-decoration: none;
-  font-size: 0.95rem;
-  letter-spacing: 1.5px;
-  transition: all 0.3s ease;
+  font-family: 'Sveva', 'Cinzel', serif;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
   position: relative;
   padding: 0.25rem 0;
 }
 
-.nav-links a::before {
-  display: none;
-}
+.nav-links a::before { display: none; }
 
 .nav-links a::after {
   content: '';
@@ -713,22 +732,16 @@ nav::before {
   left: 0;
   width: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  background: var(--ornament);
   transition: width 0.3s ease;
 }
 
 .nav-links a:hover {
-  color: var(--gold-light);
-  text-shadow: 0 0 20px rgba(201, 162, 39, 0.5);
+  color: var(--ink);
+  text-shadow: none;
 }
 
-.nav-links a:hover::before {
-  transform: translateX(-50%) scale(1);
-}
-
-.nav-links a:hover::after {
-  width: 100%;
-}
+.nav-links a:hover::after { width: 100%; }
 
 /* ============================================
    HOMEPAGE BACKGROUND IMAGE
@@ -1005,15 +1018,15 @@ nav::before {
 
 .hero-text h1 {
   /* FONT OPTIONS - uncomment one to try:
-   * font-family: 'Cinzel', serif;          -- Regal, ancient Roman
+   * font-family: 'Sveva', 'Cinzel', serif;          -- Regal, ancient Roman
    * font-family: 'Cormorant', serif;       -- Elegant fantasy
    * font-family: 'MedievalSharp', cursive; -- Medieval manuscript
    * font-family: 'Tangerine', cursive;     -- Flowing elvish script
    * font-family: 'Uncial Antiqua', cursive;-- Celtic/medieval
    */
-  font-family: 'Cinzel', serif;
+  font-family: 'Sveva', 'Cinzel', serif;
   font-size: 4.5rem;
-  font-weight: 400;
+  font-weight: 300;
   color: var(--gold);
   margin-bottom: 0.5rem;
   text-shadow:
@@ -1068,100 +1081,41 @@ nav::before {
 }
 
 .btn {
-  padding: 1.1rem 2.5rem;
+  padding: 0.85rem 2.2rem;
   text-decoration: none;
-  font-size: 0.95rem;
-  letter-spacing: 1.5px;
-  transition: all 0.3s ease;
+  font-family: 'Georgia', serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  transition: all 0.25s ease;
   position: relative;
+  display: inline-block;
 }
 
-/* Clean button style */
-.btn::before,
-.btn::after {
-  display: none;
-}
+.btn::before, .btn::after { display: none; }
 
 .btn.primary {
-  background: linear-gradient(
-    135deg,
-    var(--bronze) 0%,
-    var(--gold) 15%,
-    var(--gold-light) 30%,
-    var(--gold-bright) 50%,
-    var(--gold-light) 70%,
-    var(--gold) 85%,
-    var(--bronze) 100%
-  );
-  color: var(--deep-night);
-  font-weight: 500;
-  border: 2px solid var(--gold-bright);
-  box-shadow:
-    0 4px 20px rgba(201, 162, 39, 0.5),
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
-}
-
-.btn.primary::before,
-.btn.primary::after {
-  color: var(--deep-night);
-  opacity: 0.5;
+  background: var(--ink);
+  color: var(--parchment);
+  border: 1px solid var(--ink);
 }
 
 .btn.primary:hover {
-  transform: translateY(-3px);
-  box-shadow:
-    0 8px 35px rgba(201, 162, 39, 0.7),
-    inset 0 1px 0 rgba(255, 255, 255, 0.4),
-    0 0 20px rgba(201, 162, 39, 0.4);
-  border-color: var(--gold-pale);
-}
-
-.btn.primary:hover::before,
-.btn.primary:hover::after {
-  opacity: 0.8;
+  background: var(--ink-mid);
+  border-color: var(--ink-mid);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(30, 26, 18, 0.2);
 }
 
 .btn.secondary {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 39, 0.1) 0%,
-    rgba(201, 162, 39, 0.05) 50%,
-    rgba(201, 162, 39, 0.1) 100%
-  );
-  color: var(--gold);
-  border: 2px solid;
-  border-image: linear-gradient(
-    135deg,
-    var(--bronze) 0%,
-    var(--gold-light) 25%,
-    var(--gold) 50%,
-    var(--gold-light) 75%,
-    var(--bronze) 100%
-  ) 1;
-  box-shadow:
-    0 0 15px rgba(201, 162, 39, 0.15),
-    inset 0 0 20px rgba(201, 162, 39, 0.05);
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ornament);
 }
 
 .btn.secondary:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(201, 162, 39, 0.2) 0%,
-    rgba(201, 162, 39, 0.1) 50%,
-    rgba(201, 162, 39, 0.2) 100%
-  );
-  transform: translateY(-3px);
-  box-shadow:
-    0 8px 30px rgba(201, 162, 39, 0.3),
-    inset 0 0 30px rgba(201, 162, 39, 0.1),
-    0 0 20px rgba(201, 162, 39, 0.2);
-}
-
-.btn.secondary:hover::before,
-.btn.secondary:hover::after {
-  opacity: 1;
-  color: var(--gold-bright);
+  background: rgba(107, 116, 148, 0.08);
+  border-color: var(--ornament-dark);
+  transform: translateY(-2px);
 }
 
 /* ============================================
@@ -1190,22 +1144,23 @@ nav::before {
 
 /* Section divider */
 .quick-links::before {
-  content: '— ✧ —';
+  content: '◦ ─── ○ ─── ◦ ─── ○ ─── ◦';
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
   color: var(--gold);
   opacity: 0.4;
-  letter-spacing: 10px;
+  letter-spacing: 4px;
+  font-size: 0.7rem;
+  white-space: nowrap;
 }
 
 .card {
   width: 230px;
   padding: 2.25rem 1.75rem;
-  background:
-    linear-gradient(135deg, rgba(15, 39, 68, 0.7) 0%, rgba(45, 27, 61, 0.7) 100%);
-  border: 1px solid rgba(201, 162, 39, 0.25);
+  background: rgba(224, 216, 196, 0.5);
+  border: 1px solid rgba(107, 116, 148, 0.25);
   text-decoration: none;
   text-align: center;
   transition: all 0.4s ease;
@@ -1241,10 +1196,8 @@ nav::before {
 
 .card:hover {
   transform: translateY(-6px);
-  border-color: var(--gold);
-  box-shadow:
-    0 15px 50px rgba(201, 162, 39, 0.2),
-    0 0 40px rgba(201, 162, 39, 0.1);
+  border-color: var(--ornament);
+  box-shadow: 0 12px 40px rgba(107, 116, 148, 0.15);
 }
 
 .card:hover::before {
@@ -1256,40 +1209,35 @@ nav::before {
 }
 
 .card-icon {
-  font-size: 2.25rem;
-  color: var(--gold);
+  font-size: 2rem;
+  color: var(--ornament);
   margin-bottom: 1.25rem;
-  text-shadow: 0 0 20px rgba(201, 162, 39, 0.5);
   transition: transform 0.4s ease;
 }
 
-.card:hover .card-icon {
-  transform: scale(1.1);
-}
+.card:hover .card-icon { transform: scale(1.1); }
 
 .card h3 {
-  color: var(--pearl);
+  color: var(--ink);
+  font-family: 'Georgia', serif;
   font-weight: normal;
-  font-size: 1.15rem;
+  font-size: 1rem;
   margin-bottom: 0.5rem;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.5px;
 }
 
 .card p {
-  color: var(--silver);
+  color: var(--ink-light);
   font-size: 0.85rem;
   font-style: italic;
 }
 
 .card.external {
-  background: linear-gradient(135deg, rgba(13, 40, 24, 0.7) 0%, rgba(26, 92, 58, 0.5) 100%);
+  background: rgba(210, 220, 210, 0.4);
 }
 
 .card.external:hover {
-  border-color: var(--emerald-glow);
-  box-shadow:
-    0 15px 50px rgba(26, 92, 58, 0.3),
-    0 0 40px rgba(26, 92, 58, 0.15);
+  border-color: var(--ornament-dark);
 }
 
 /* ============================================
@@ -1298,26 +1246,22 @@ nav::before {
 footer {
   text-align: center;
   padding: 3rem;
-  color: var(--silver);
-  font-size: 0.85rem;
+  color: var(--ink-light);
+  font-size: 0.82rem;
   position: relative;
-  border-top: 1px solid rgba(201, 162, 39, 0.1);
-  background: linear-gradient(0deg, rgba(8, 8, 15, 0.9) 0%, transparent 100%);
+  border-top: 1px solid rgba(107, 116, 148, 0.2);
+  background: rgba(224, 216, 196, 0.4);
 }
 
-footer::before {
-  display: none;
-}
+footer::before { display: none; }
 
 footer a {
-  color: var(--gold);
+  color: var(--ink);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: color 0.2s;
 }
 
-footer a:hover {
-  text-shadow: 0 0 20px rgba(201, 162, 39, 0.5);
-}
+footer a:hover { color: var(--ornament-dark); }
 
 .footer-quote {
   font-size: 0.7rem;
@@ -1341,19 +1285,15 @@ footer a:hover {
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: var(--gold);
-  transition: all 0.3s ease;
+  color: var(--ornament);
+  transition: all 0.25s ease;
 }
 
-.social-link svg {
-  width: 20px;
-  height: 20px;
-}
+.social-link svg { width: 20px; height: 20px; }
 
 .social-link:hover {
-  color: var(--gold-bright);
+  color: var(--ornament-dark);
   transform: translateY(-2px);
-  filter: drop-shadow(0 0 8px rgba(201, 162, 39, 0.6));
 }
 
 /* ============================================

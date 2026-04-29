@@ -5,8 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Who I Am | Azmyth</title>
-  <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="pages.css">
+  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="pages.css?v=11">
   <style>
     .fun-facts-section {
       max-width: 900px;
@@ -87,6 +87,27 @@
       text-transform: uppercase;
       font-weight: normal;
     }
+    /* hide the generated right-side astrolabe on this page */
+    .page-content::after { display: none; }
+
+    /* push all content left so it never slides under the graphic */
+    .page-content { padding-right: 32vh; }
+
+    .about-accent {
+      position: fixed;
+      right: 0;
+      top: 0;
+      height: 100vh;
+      width: auto;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .about-accent img {
+      display: block;
+      height: 100%;
+      width: auto;
+      opacity: 0.88;
+    }
   </style>
 </head>
 <body>
@@ -112,15 +133,9 @@
       <h1>I Am</h1>
     </header>
 
-    <section class="about-section">
-      <div class="about-image">
-        <div class="portrait-frame small">
-          <div class="portrait-placeholder">
-            <img src="about-photo.png" alt="Azmyth">
-          </div>
-        </div>
-      </div>
+    <div class="arc-divider"></div>
 
+    <section class="about-section">
       <div class="about-text">
         <p class="bio-intro">
           I'm a multidisciplinary artist, performer, and maker whose work lives at the intersection of the visceral and the beautiful. Based in the Bay Area, I move fluidly between Butoh dance, sewing, painting, fire spinning, event production, and interior design — a creative practice that treats the body, the room, and the people in it as a single instrument to play.
@@ -138,6 +153,7 @@
           When I'm not in the middle of a creative project, I'm behind a sewing machine, deep in floor choreography, moving through fusion dance, curating elaborate playlists, at yoga, or doing socially unnecessary impressions.
         </p>
       </div>
+
     </section>
 
 
@@ -204,6 +220,10 @@
     <p>&copy; 2026 Azmyth &middot; <a href="https://mysticloak.com" target="_blank">mysticloak.com</a></p>
     <p class="footer-quote">I gather what hurts, I bless it with holy nonsense</p>
   </footer>
+
+  <div class="about-accent">
+    <img src="images/fantasy-line-transparent.png" alt="">
+  </div>
 
   </body>
 </html>

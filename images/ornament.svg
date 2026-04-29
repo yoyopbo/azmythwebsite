@@ -1,0 +1,146 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="390" viewBox="0 0 200 390">
+  <g fill="none" stroke="#6b7494">
+
+    <!-- OUTER RING -->
+    <circle cx="100" cy="170" r="88" stroke-width="2.5" opacity="0.92"/>
+
+    <!-- SECOND RING -->
+    <circle cx="100" cy="170" r="66" stroke-width="1.8" opacity="0.88"/>
+
+    <!-- THIRD RING -->
+    <circle cx="100" cy="170" r="44" stroke-width="1.3" opacity="0.82"/>
+
+    <!-- INNER RING -->
+    <circle cx="100" cy="170" r="22" stroke-width="1" opacity="0.78"/>
+
+    <!-- CENTER OUTLINE -->
+    <circle cx="100" cy="170" r="9" stroke-width="1" opacity="0.72"/>
+
+    <!-- CENTER FILL -->
+    <circle cx="100" cy="170" r="5" fill="#6b7494" stroke="none" opacity="0.82"/>
+
+    <!-- CROSSHAIRS -->
+    <line x1="5" y1="170" x2="195" y2="170" stroke-width="1" opacity="0.6"/>
+    <line x1="100" y1="75" x2="100" y2="262" stroke-width="1" opacity="0.6"/>
+
+    <!-- DIAGONAL CROSSHAIRS -->
+    <line x1="38" y1="108" x2="162" y2="232" stroke-width="0.75" opacity="0.48"/>
+    <line x1="162" y1="108" x2="38" y2="232" stroke-width="0.75" opacity="0.48"/>
+
+    <!-- NORTH extension + cap -->
+    <line x1="100" y1="82" x2="100" y2="60" stroke-width="2" opacity="0.85"/>
+    <circle cx="100" cy="54" r="6" stroke-width="1.5" opacity="0.88"/>
+    <circle cx="100" cy="54" r="2.5" fill="#6b7494" stroke="none" opacity="0.82"/>
+
+    <!-- EAST extension + cap -->
+    <line x1="188" y1="170" x2="197" y2="170" stroke-width="2" opacity="0.82"/>
+    <circle cx="199" cy="170" r="3.5" stroke-width="1.2" opacity="0.75"/>
+
+    <!-- WEST extension + cap (partially off-screen) -->
+    <line x1="12" y1="170" x2="3" y2="170" stroke-width="2" opacity="0.82"/>
+    <circle cx="1" cy="170" r="3.5" stroke-width="1.2" opacity="0.75"/>
+
+    <!-- NE cap (45°) -->
+    <line x1="162" y1="108" x2="169" y2="101" stroke-width="1.6" opacity="0.78"/>
+    <circle cx="173" cy="97" r="4.5" stroke-width="1.3" opacity="0.72"/>
+    <circle cx="173" cy="97" r="2" fill="#6b7494" stroke="none" opacity="0.7"/>
+
+    <!-- NW cap -->
+    <line x1="38" y1="108" x2="31" y2="101" stroke-width="1.6" opacity="0.78"/>
+    <circle cx="27" cy="97" r="4.5" stroke-width="1.3" opacity="0.72"/>
+    <circle cx="27" cy="97" r="2" fill="#6b7494" stroke="none" opacity="0.7"/>
+
+    <!-- SE cap -->
+    <line x1="162" y1="232" x2="169" y2="239" stroke-width="1.6" opacity="0.78"/>
+    <circle cx="173" cy="243" r="4.5" stroke-width="1.3" opacity="0.72"/>
+    <circle cx="173" cy="243" r="2" fill="#6b7494" stroke="none" opacity="0.7"/>
+
+    <!-- SW cap -->
+    <line x1="38" y1="232" x2="31" y2="239" stroke-width="1.6" opacity="0.78"/>
+    <circle cx="27" cy="243" r="4.5" stroke-width="1.3" opacity="0.72"/>
+    <circle cx="27" cy="243" r="2" fill="#6b7494" stroke="none" opacity="0.7"/>
+
+    <!-- 22.5° TICK MARKS (outward from outer ring) -->
+    <!-- NNE -->
+    <line x1="134" y1="89" x2="137" y2="81" stroke-width="1.3" opacity="0.62"/>
+    <!-- ENE -->
+    <line x1="181" y1="136" x2="189" y2="133" stroke-width="1.3" opacity="0.62"/>
+    <!-- ESE -->
+    <line x1="181" y1="204" x2="189" y2="207" stroke-width="1.3" opacity="0.62"/>
+    <!-- SSE -->
+    <line x1="134" y1="251" x2="137" y2="259" stroke-width="1.3" opacity="0.62"/>
+    <!-- SSW -->
+    <line x1="66" y1="251" x2="63" y2="259" stroke-width="1.3" opacity="0.62"/>
+    <!-- WSW -->
+    <line x1="19" y1="204" x2="11" y2="207" stroke-width="1.3" opacity="0.62"/>
+    <!-- WNW -->
+    <line x1="19" y1="136" x2="11" y2="133" stroke-width="1.3" opacity="0.62"/>
+    <!-- NNW -->
+    <line x1="66" y1="89" x2="63" y2="81" stroke-width="1.3" opacity="0.62"/>
+
+    <!-- ACCENT DOTS: second ring × cardinal crosshairs -->
+    <circle cx="100" cy="104" r="3.5" fill="#6b7494" stroke="none" opacity="0.58"/>
+    <circle cx="100" cy="236" r="3.5" fill="#6b7494" stroke="none" opacity="0.58"/>
+    <circle cx="34"  cy="170" r="3.5" fill="#6b7494" stroke="none" opacity="0.58"/>
+    <circle cx="166" cy="170" r="3.5" fill="#6b7494" stroke="none" opacity="0.58"/>
+
+    <!-- ACCENT DOTS: third ring × diagonal crosshairs -->
+    <circle cx="131" cy="139" r="2.5" fill="#6b7494" stroke="none" opacity="0.48"/>
+    <circle cx="69"  cy="139" r="2.5" fill="#6b7494" stroke="none" opacity="0.48"/>
+    <circle cx="131" cy="201" r="2.5" fill="#6b7494" stroke="none" opacity="0.48"/>
+    <circle cx="69"  cy="201" r="2.5" fill="#6b7494" stroke="none" opacity="0.48"/>
+
+    <!-- DECORATIVE ARCS between outer and second ring (at r=77) in diagonal quadrants -->
+    <path d="M 129,91 A 77,77 0 0,1 171,141" stroke-width="0.9" opacity="0.38"/>
+    <path d="M 171,199 A 77,77 0 0,1 129,249" stroke-width="0.9" opacity="0.38"/>
+    <path d="M 71,249 A 77,77 0 0,1 29,199"  stroke-width="0.9" opacity="0.38"/>
+    <path d="M 29,141 A 77,77 0 0,1 71,91"   stroke-width="0.9" opacity="0.38"/>
+
+    <!-- INTERIOR ARC FLOURISHES (quarter arcs inside inner ring, r=22) -->
+    <path d="M 100,148 A 22,22 0 0,1 122,170" stroke-width="1.1" opacity="0.52"/>
+    <path d="M 122,170 A 22,22 0 0,1 100,192" stroke-width="1.1" opacity="0.52"/>
+    <path d="M 100,192 A 22,22 0 0,1  78,170" stroke-width="1.1" opacity="0.52"/>
+    <path d="M  78,170 A 22,22 0 0,1 100,148" stroke-width="1.1" opacity="0.52"/>
+
+    <!-- SECOND RING INTERIOR: small arcs at cardinal meeting points -->
+    <!-- Tiny inward arcs near N,S,E,W on second ring -->
+    <path d="M 86,104 A 14,14 0 0,1 114,104" stroke-width="0.8" opacity="0.4"/>
+    <path d="M 86,236 A 14,14 0 0,0 114,236" stroke-width="0.8" opacity="0.4"/>
+    <path d="M 34,156 A 14,14 0 0,1 34,184"  stroke-width="0.8" opacity="0.4"/>
+    <path d="M 166,156 A 14,14 0 0,0 166,184" stroke-width="0.8" opacity="0.4"/>
+
+    <!-- PENDANT STEM from bottom of outer ring -->
+    <line x1="100" y1="258" x2="100" y2="278" stroke-width="2" opacity="0.82"/>
+
+    <!-- JOINT BALL -->
+    <circle cx="100" cy="284" r="6.5" stroke-width="1.6" opacity="0.85"/>
+    <circle cx="100" cy="284" r="3"   fill="#6b7494" stroke="none" opacity="0.78"/>
+
+    <!-- CONNECTING STEM to pendant -->
+    <line x1="100" y1="291" x2="100" y2="303" stroke-width="1.5" opacity="0.78"/>
+
+    <!-- SMALL FLANKING DOTS near pendant connection -->
+    <circle cx="88" cy="296" r="2" fill="#6b7494" stroke="none" opacity="0.42"/>
+    <circle cx="112" cy="296" r="2" fill="#6b7494" stroke="none" opacity="0.42"/>
+
+    <!-- OUTER PENDANT RING -->
+    <circle cx="100" cy="326" r="24" stroke-width="2" opacity="0.88"/>
+
+    <!-- INNER PENDANT RING -->
+    <circle cx="100" cy="326" r="15" stroke-width="1.3" opacity="0.82"/>
+
+    <!-- UPWARD TRIANGLE inside pendant -->
+    <polygon points="100,309 115,334 85,334" stroke-width="1.3" opacity="0.78"/>
+
+    <!-- PENDANT CENTER DOT -->
+    <circle cx="100" cy="326" r="4.5" fill="#6b7494" stroke="none" opacity="0.72"/>
+
+    <!-- BOTTOM TICK below pendant -->
+    <line x1="100" y1="350" x2="100" y2="365" stroke-width="1.5" opacity="0.78"/>
+
+    <!-- BOTTOM CAP CIRCLE -->
+    <circle cx="100" cy="369" r="4.5" stroke-width="1.3" opacity="0.75"/>
+    <circle cx="100" cy="369" r="1.8" fill="#6b7494" stroke="none" opacity="0.68"/>
+
+  </g>
+</svg>

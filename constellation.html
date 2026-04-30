@@ -3,318 +3,193 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Constellation</title>
+  <title>Azmyth's Constellation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
     :root {
-      --bg: #060d1a;
-      --gold: #c9a227;
-      --gold-dim: rgba(201,162,39,0.35);
-      --silver: #b8b8c8;
-      --panel-bg: rgba(6,12,26,0.96);
-      --border: rgba(201,162,39,0.18);
-      --text: #e8d4b8;
-      --text-dim: rgba(232,212,184,0.45);
+      --bg:#060d1a; --gold:#c9a227; --gold-dim:rgba(201,162,39,0.35);
+      --silver:#b8b8c8; --panel-bg:rgba(6,12,26,0.96);
+      --border:rgba(201,162,39,0.18); --text:#e8d4b8; --text-dim:rgba(232,212,184,0.45);
     }
-
     html, body { width:100%; height:100%; overflow:hidden; background:var(--bg); color:var(--text); }
 
-    /* ─── STARFIELD ─── */
     #starfield { position:fixed; inset:0; pointer-events:none; z-index:0; }
 
-    /* ─── TOOLBAR ─── */
     #toolbar {
       position:fixed; top:0; left:0; right:0; height:48px;
       background:rgba(4,9,20,0.9); border-bottom:1px solid var(--border);
       display:flex; align-items:center; padding:0 1.25rem; gap:0.75rem;
       z-index:200; backdrop-filter:blur(10px);
     }
-    .logo {
-      font-family:'Cinzel',serif; font-size:0.88rem; font-weight:600;
-      color:var(--gold); letter-spacing:3px; margin-right:auto;
-    }
-    .tb-btn {
-      background:none; border:1px solid var(--border); color:var(--text-dim);
-      padding:5px 14px; border-radius:20px; font-family:'Cinzel',serif;
-      font-size:0.65rem; letter-spacing:1px; cursor:pointer; transition:all 0.2s;
-      white-space:nowrap;
-    }
+    .logo { font-family:'Cinzel',serif; font-size:0.88rem; font-weight:600; color:var(--gold); letter-spacing:3px; margin-right:auto; }
+    .tb-btn { background:none; border:1px solid var(--border); color:var(--text-dim); padding:5px 14px; border-radius:20px; font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:1px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
     .tb-btn:hover { border-color:var(--gold-dim); color:var(--gold); }
     .tb-btn.active { background:rgba(201,162,39,0.12); border-color:var(--gold); color:var(--gold); }
 
-    /* ─── CANVAS ─── */
-    #canvas {
-      position:fixed; inset:0; top:48px; overflow:hidden; cursor:default; z-index:1;
-    }
-    #connections-svg {
-      position:absolute; inset:0; width:100%; height:100%;
-      overflow:visible; z-index:1;
-    }
-    .conn-path {
-      fill:none; stroke:rgba(201,162,39,0.28); stroke-width:1.5;
-      stroke-dasharray:5 7; cursor:pointer;
-      transition:stroke 0.2s, stroke-width 0.2s;
-    }
-    .conn-path:hover { stroke:rgba(201,162,39,0.7); stroke-width:2.5; }
+    #canvas { position:fixed; inset:0; top:48px; overflow:auto; cursor:default; z-index:1; }
+    #canvas-inner { position:absolute; top:0; left:0; width:3000px; height:3000px; }
 
-    /* ─── BUBBLES ─── */
+    #connections-svg { position:absolute; top:0; left:0; width:3000px; height:3000px; overflow:visible; z-index:1; pointer-events:none; }
+    #perm-lines { pointer-events:all; }
+
+    .ring-label { font-family:'Cinzel',serif; font-size:0.5rem; letter-spacing:2px; fill:rgba(201,162,39,0.18); text-transform:uppercase; pointer-events:none; }
+
+    .conn-path { fill:none; stroke-width:1.8; cursor:pointer; transition:opacity 0.28s; opacity:0.16; }
+    .conn-path.hover-bright { opacity:0.95 !important; stroke-width:2.5; }
+    .conn-path.hover-dim    { opacity:0.03 !important; }
+    .conn-path:hover        { opacity:0.7; }
+    .conn-path[data-type="funds"]    { stroke:rgba(201,162,39,0.8);   stroke-dasharray:none; stroke-width:2.5; }
+    .conn-path[data-type="requires"] { stroke:rgba(80,160,220,0.75);  stroke-dasharray:10 4; stroke-width:2; }
+    .conn-path[data-type="vibes"]    { stroke:rgba(160,100,220,0.65); stroke-dasharray:3 7;  stroke-width:1.5; }
+    .conn-path:not([data-type])      { stroke:rgba(201,162,39,0.55);  stroke-dasharray:6 5; }
+
     .bubble {
       position:absolute; border-radius:50%; transform:translate(-50%,-50%);
       display:flex; align-items:center; justify-content:center; text-align:center;
-      font-family:'Cinzel',serif; font-weight:600; line-height:1.25; padding:10px;
+      font-family:'Cinzel',serif; font-weight:900; line-height:1.25; padding:14px;
       word-break:break-word; hyphens:auto; user-select:none; cursor:pointer;
-      border:1px solid rgba(201,162,39,0.12); z-index:5;
-      transition:border-color 0.25s, box-shadow 0.25s, opacity 0.25s;
+      border:1px solid rgba(201,162,39,0.14); z-index:5;
+      transition:border-color 0.3s, box-shadow 0.3s, opacity 0.5s, filter 0.6s, width 0.55s, height 0.55s, font-size 0.55s;
     }
-    .bubble[data-stars="1"] { width:100px; height:100px; font-size:9px; opacity:0.72; }
-    .bubble[data-stars="2"] { width:124px; height:124px; font-size:10.5px; opacity:0.88; }
-    .bubble[data-stars="3"] { width:150px; height:150px; font-size:12px; opacity:1; }
 
-    .bubble[data-status="not-started"] { background:radial-gradient(circle at 38% 38%, #232f52, #0e1628); }
-    .bubble[data-status="simmering"]   { background:radial-gradient(circle at 38% 38%, #3d2460, #180d2c); }
-    .bubble[data-status="in-progress"] { background:radial-gradient(circle at 38% 38%, #163d30, #091a14); }
-    .bubble[data-status="done"]        { background:radial-gradient(circle at 38% 38%, #163016, #091409); }
+    .bubble[data-status="not-started"] { background:rgba(12,22,45,0.28); border-color:rgba(201,162,39,0.15); }
+    .bubble[data-status="simmering"]   { background:radial-gradient(circle at 38% 38%, #5c1a1a, #1e0505); border-color:rgba(200,50,50,0.45); box-shadow:0 0 18px rgba(180,30,30,0.18); }
+    .bubble[data-status="in-progress"] { background:radial-gradient(circle at 38% 38%, #7a4a0a, #2e1500); border-color:rgba(220,150,40,0.5); box-shadow:0 0 20px rgba(200,140,40,0.22); }
+    .bubble[data-status="done"]        { background:radial-gradient(circle at 38% 38%, #1a5c20, #06180a); border-color:rgba(50,200,70,0.5); }
 
-    .bubble[data-stars="3"] { box-shadow:0 0 18px rgba(201,162,39,0.16); }
-    .bubble.has-content { border-color:rgba(201,162,39,0.42) !important; }
-    .bubble.has-content[data-stars="3"] { box-shadow:0 0 22px rgba(201,162,39,0.28); }
+    /* Inner rings (high stars) glow brightest */
+    .bubble[data-stars="1"] { opacity:0.38; }
+    .bubble[data-stars="2"] { opacity:0.55; }
+    .bubble[data-stars="3"] { opacity:0.75; }
+    .bubble[data-stars="4"] { opacity:0.92; box-shadow:0 0 24px rgba(201,162,39,0.28); border-color:rgba(201,162,39,0.28) !important; }
+    .bubble[data-stars="5"] { opacity:1;    box-shadow:0 0 38px rgba(201,162,39,0.5), 0 0 12px rgba(201,162,39,0.2) inset; border-color:rgba(201,162,39,0.44) !important; }
 
-    .bubble.selected { border-color:rgba(201,162,39,0.85) !important; box-shadow:0 0 28px rgba(201,162,39,0.45) !important; }
+    .bubble.aged-1 { filter:saturate(0.7) brightness(0.82); }
+    .bubble.aged-2 { filter:saturate(0.4) brightness(0.64); }
+    .bubble.aged-3 { filter:saturate(0.15) brightness(0.48) grayscale(0.5); }
+    .bubble.aged-3::after {
+      content:''; position:absolute; inset:0; border-radius:50%; pointer-events:none;
+      background:radial-gradient(circle at 18% 18%, rgba(200,200,200,0.07) 0%, transparent 55%),
+                 radial-gradient(circle at 82% 78%, rgba(200,200,200,0.05) 0%, transparent 45%);
+    }
+
+    .bubble.has-content { border-color:rgba(201,162,39,0.38) !important; }
+    .bubble.selected    { border-color:rgba(201,162,39,0.9) !important; box-shadow:0 0 28px rgba(201,162,39,0.5) !important; }
     .bubble.connect-source { border-color:rgba(120,190,255,0.9) !important; box-shadow:0 0 24px rgba(120,190,255,0.4) !important; }
-    .connect-mode .bubble:hover:not(.connect-source) { border-color:rgba(120,190,255,0.5); box-shadow:0 0 16px rgba(120,190,255,0.2); }
-    .bubble.dragging { z-index:50; opacity:0.88; }
+    .connect-mode .bubble:hover:not(.connect-source) { border-color:rgba(120,190,255,0.5); }
+    .bubble.dragging { z-index:50; opacity:0.9 !important; filter:none !important; }
 
-    @keyframes float-a {
-      0%,100% { transform:translate(-50%, -50%); }
-      50%      { transform:translate(-50%, calc(-50% - 10px)); }
-    }
-    @keyframes float-b {
-      0%,100% { transform:translate(-50%, -50%); }
-      50%      { transform:translate(-50%, calc(-50% + 10px)); }
-    }
-    @keyframes float-c {
-      0%,100% { transform:translate(-50%, -50%); }
-      33%      { transform:translate(-50%, calc(-50% - 7px)); }
-      66%      { transform:translate(-50%, calc(-50% + 5px)); }
-    }
-    @keyframes float-d {
-      0%,100% { transform:translate(-50%, -50%); }
-      40%      { transform:translate(-50%, calc(-50% + 8px)); }
-      80%      { transform:translate(-50%, calc(-50% - 6px)); }
-    }
-    .bubble                { animation:float-a 5s   ease-in-out infinite; }
-    .bubble:nth-child(2n)  { animation:float-b 6.5s ease-in-out infinite; animation-delay:-2s; }
-    .bubble:nth-child(3n)  { animation:float-c 7s   ease-in-out infinite; animation-delay:-3.5s; }
-    .bubble:nth-child(4n)  { animation:float-d 5.8s ease-in-out infinite; animation-delay:-1.2s; }
-    .bubble:nth-child(5n)  { animation:float-a 8s   ease-in-out infinite; animation-delay:-4s; }
-    .bubble:nth-child(7n)  { animation:float-b 6s   ease-in-out infinite; animation-delay:-0.8s; }
-    .bubble.dragging       { animation:none !important; transform:translate(-50%,-50%) !important; }
+    @keyframes float-a { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-50%,calc(-50% - 8px))} }
+    @keyframes float-b { 0%,100%{transform:translate(-50%,-50%)} 50%{transform:translate(-50%,calc(-50% + 8px))} }
+    @keyframes float-c { 0%,100%{transform:translate(-50%,-50%)} 33%{transform:translate(-50%,calc(-50% - 5px))} 66%{transform:translate(-50%,calc(-50% + 5px))} }
+    @keyframes float-d { 0%,100%{transform:translate(-50%,-50%)} 40%{transform:translate(-50%,calc(-50% + 7px))} 80%{transform:translate(-50%,calc(-50% - 6px))} }
+    .bubble               { animation:float-a 5s   ease-in-out infinite; }
+    .bubble:nth-child(2n) { animation:float-b 6.5s ease-in-out infinite; animation-delay:-2s; }
+    .bubble:nth-child(3n) { animation:float-c 7s   ease-in-out infinite; animation-delay:-3.5s; }
+    .bubble:nth-child(4n) { animation:float-d 5.8s ease-in-out infinite; animation-delay:-1.2s; }
+    .bubble:nth-child(5n) { animation:float-a 8s   ease-in-out infinite; animation-delay:-4s; }
+    .bubble:nth-child(7n) { animation:float-b 6s   ease-in-out infinite; animation-delay:-0.8s; }
+    .bubble.dragging { animation:none !important; transform:translate(-50%,-50%) !important; }
 
-    /* ─── AVATAR ─── */
-    #avatar-node {
-      position:absolute; transform:translate(-50%,-50%); cursor:pointer; z-index:10;
-    }
-    #avatar-glow {
-      position:absolute; inset:-28px; border-radius:50%;
-      background:radial-gradient(circle, rgba(201,162,39,0.14) 0%, transparent 68%);
-      animation:aglow 3.5s ease-in-out infinite; pointer-events:none;
-    }
-    @keyframes aglow {
-      0%,100% { opacity:0.55; transform:scale(1); }
-      50%      { opacity:1; transform:scale(1.08); }
-    }
+    #avatar-node { position:absolute; transform:translate(-50%,-50%); cursor:pointer; z-index:10; }
+    #avatar-glow { position:absolute; inset:-28px; border-radius:50%; background:radial-gradient(circle, rgba(201,162,39,0.14) 0%, transparent 68%); animation:aglow 3.5s ease-in-out infinite; pointer-events:none; }
+    @keyframes aglow { 0%,100%{opacity:0.55;transform:scale(1)} 50%{opacity:1;transform:scale(1.08)} }
     #avatar-canvas { display:block; image-rendering:pixelated; }
-    #avatar-label {
-      font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:2px;
-      color:var(--gold-dim); text-align:center; margin-top:4px;
-      pointer-events:none;
-    }
+    #avatar-label  { font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:2px; color:var(--gold-dim); text-align:center; margin-top:4px; pointer-events:none; }
 
-    /* ─── SIDE PANEL ─── */
-    #panel {
-      position:fixed; top:48px; right:0; bottom:0; width:350px;
-      background:var(--panel-bg); border-left:1px solid var(--border);
-      transform:translateX(100%); transition:transform 0.3s cubic-bezier(.4,0,.2,1);
-      z-index:150; overflow-y:auto; padding:1.5rem;
-      backdrop-filter:blur(14px);
-    }
+    #panel { position:fixed; top:48px; right:0; bottom:0; width:350px; background:var(--panel-bg); border-left:1px solid var(--border); transform:translateX(100%); transition:transform 0.3s cubic-bezier(.4,0,.2,1); z-index:150; overflow-y:auto; padding:1.5rem; backdrop-filter:blur(14px); }
     #panel.open { transform:translateX(0); }
-
-    .panel-head {
-      display:flex; align-items:center; justify-content:space-between;
-      margin-bottom:1.4rem; padding-bottom:0.75rem; border-bottom:1px solid var(--border);
-    }
-    .panel-title {
-      font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); font-weight:600;
-      line-height:1.3; max-width:260px;
-    }
-    .x-btn {
-      background:none; border:none; color:var(--text-dim); cursor:pointer;
-      font-size:1rem; padding:2px 6px; line-height:1; transition:color 0.2s;
-    }
+    .panel-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.4rem; padding-bottom:0.75rem; border-bottom:1px solid var(--border); }
+    .panel-title { font-family:'Cinzel',serif; font-size:1rem; color:var(--gold); font-weight:600; line-height:1.3; max-width:260px; }
+    .x-btn { background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:1rem; padding:2px 6px; line-height:1; transition:color 0.2s; }
     .x-btn:hover { color:var(--text); }
-
     .p-section { margin-bottom:1.4rem; }
-    .p-label {
-      font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:2px;
-      color:var(--text-dim); text-transform:uppercase; margin-bottom:0.5rem;
-    }
+    .p-label { font-family:'Cinzel',serif; font-size:0.6rem; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; margin-bottom:0.5rem; }
 
-    /* Status */
     .status-row { display:flex; flex-wrap:wrap; gap:0.35rem; }
-    .s-btn {
-      padding:4px 11px; border-radius:16px; font-size:0.68rem;
-      font-family:'Cinzel',serif; letter-spacing:0.4px;
-      border:1px solid rgba(255,255,255,0.1); background:none;
-      color:var(--text-dim); cursor:pointer; transition:all 0.2s;
-    }
-    .s-btn[data-s="not-started"].on { background:rgba(35,47,82,0.7); border-color:rgba(100,130,210,0.5); color:#a0b4e8; }
-    .s-btn[data-s="simmering"].on   { background:rgba(61,36,96,0.7); border-color:rgba(160,110,220,0.5); color:#c0a0e0; }
-    .s-btn[data-s="in-progress"].on { background:rgba(22,61,48,0.7); border-color:rgba(80,180,130,0.5); color:#80d4a0; }
-    .s-btn[data-s="done"].on        { background:rgba(22,48,22,0.7); border-color:rgba(80,180,80,0.5); color:#80d480; }
+    .s-btn { padding:4px 11px; border-radius:16px; font-size:0.68rem; font-family:'Cinzel',serif; letter-spacing:0.4px; border:1px solid rgba(255,255,255,0.1); background:none; color:var(--text-dim); cursor:pointer; transition:all 0.2s; }
+    .s-btn[data-s="not-started"].on { background:rgba(20,35,70,0.6);  border-color:rgba(100,130,210,0.5); color:#a0b4e8; }
+    .s-btn[data-s="simmering"].on   { background:rgba(80,20,20,0.7);  border-color:rgba(200,50,50,0.6);   color:#f08888; }
+    .s-btn[data-s="in-progress"].on { background:rgba(100,60,10,0.7); border-color:rgba(220,150,40,0.6);  color:#f0c060; }
+    .s-btn[data-s="done"].on        { background:rgba(20,90,30,0.7);  border-color:rgba(50,200,70,0.7);   color:#50e070; }
 
-    /* Stars */
-    .stars-row { display:flex; gap:0.4rem; }
-    .star { background:none; border:none; font-size:1.25rem; cursor:pointer;
-      opacity:0.22; transition:opacity 0.15s, transform 0.12s; padding:2px; }
-    .star.on { opacity:1; }
-    .star:hover { transform:scale(1.2); opacity:0.6; }
+    .stars-row { display:flex; gap:0.6rem; align-items:center; }
+    .star { background:none; border:none; font-size:2.2rem; cursor:pointer; color:rgba(201,162,39,0.2); transition:color 0.15s, transform 0.12s; padding:2px; line-height:1; }
+    .star.on { color:var(--gold); text-shadow:0 0 12px rgba(201,162,39,0.6); }
+    .star:hover { transform:scale(1.15); color:rgba(201,162,39,0.6); }
 
-    /* Todos */
     .todo-list { list-style:none; margin-bottom:0.5rem; }
-    .todo-item {
-      display:flex; align-items:center; gap:0.5rem; padding:5px 0;
-      border-bottom:1px solid rgba(255,255,255,0.04);
-    }
+    .todo-item { display:flex; align-items:center; gap:0.5rem; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.04); }
     .todo-item input[type="checkbox"] { accent-color:var(--gold); width:13px; height:13px; cursor:pointer; flex-shrink:0; }
     .todo-item label { font-size:0.82rem; flex:1; cursor:pointer; }
     .todo-item.done label { text-decoration:line-through; opacity:0.35; }
     .del-todo { background:none; border:none; color:transparent; cursor:pointer; font-size:0.75rem; transition:color 0.15s; padding:0 2px; }
     .todo-item:hover .del-todo { color:var(--text-dim); }
     .del-todo:hover { color:#d06060 !important; }
-
     .todo-add { display:flex; gap:0.4rem; }
-    .todo-inp {
-      flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border);
-      color:var(--text); padding:5px 9px; border-radius:4px;
-      font-size:0.8rem; font-family:'IM Fell English',serif;
-    }
+    .todo-inp { flex:1; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text); padding:5px 9px; border-radius:4px; font-size:0.8rem; font-family:'IM Fell English',serif; }
     .todo-inp:focus { outline:none; border-color:var(--gold-dim); }
-    .add-btn {
-      background:rgba(201,162,39,0.1); border:1px solid var(--gold-dim);
-      color:var(--gold); padding:5px 11px; border-radius:4px;
-      cursor:pointer; font-size:0.82rem; transition:background 0.2s;
-    }
+    .add-btn { background:rgba(201,162,39,0.1); border:1px solid var(--gold-dim); color:var(--gold); padding:5px 11px; border-radius:4px; cursor:pointer; font-size:0.82rem; transition:background 0.2s; }
     .add-btn:hover { background:rgba(201,162,39,0.2); }
 
-    /* Notes */
-    .notes-ta {
-      width:100%; min-height:90px; background:rgba(255,255,255,0.03);
-      border:1px solid var(--border); color:var(--text);
-      padding:8px 10px; border-radius:4px; font-size:0.83rem;
-      font-family:'IM Fell English',serif; font-style:italic;
-      resize:vertical; line-height:1.65;
-    }
+    .notes-ta { width:100%; min-height:90px; background:rgba(255,255,255,0.03); border:1px solid var(--border); color:var(--text); padding:8px 10px; border-radius:4px; font-size:0.83rem; font-family:'IM Fell English',serif; font-style:italic; resize:vertical; line-height:1.65; }
     .notes-ta:focus { outline:none; border-color:var(--gold-dim); }
 
-    /* Connections in panel */
-    .conn-tags { display:flex; flex-wrap:wrap; gap:0.35rem; }
-    .ctag {
-      display:flex; align-items:center; gap:4px;
-      background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09);
-      border-radius:14px; padding:3px 10px; font-size:0.7rem;
-    }
+    .conn-tags { display:flex; flex-wrap:wrap; gap:0.35rem; margin-bottom:0.5rem; }
+    .ctag { display:flex; align-items:center; gap:4px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.09); border-radius:14px; padding:3px 10px; font-size:0.7rem; }
+    .ctag-type { font-size:0.57rem; opacity:0.5; margin-left:2px; font-style:italic; }
     .ctag-x { background:none; border:none; color:var(--text-dim); cursor:pointer; font-size:0.68rem; padding:0; transition:color 0.15s; }
     .ctag-x:hover { color:#d06060; }
+    .conn-add-row { display:flex; gap:0.4rem; flex-wrap:wrap; }
+    .conn-add-row select { flex:1; min-width:0; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text); padding:5px 8px; border-radius:4px; font-family:'IM Fell English',serif; font-size:0.8rem; cursor:pointer; }
+    .conn-add-row select:focus { outline:none; border-color:var(--gold-dim); }
+    select option { background:#0d1b30; color:var(--text); }
 
-    /* Danger */
-    .del-btn {
-      background:none; border:1px solid rgba(180,60,60,0.3); color:rgba(180,60,60,0.6);
-      padding:5px 13px; border-radius:4px; font-size:0.68rem;
-      font-family:'Cinzel',serif; letter-spacing:1px; cursor:pointer; transition:all 0.2s;
-    }
+    .del-btn { background:none; border:1px solid rgba(180,60,60,0.3); color:rgba(180,60,60,0.6); padding:5px 13px; border-radius:4px; font-size:0.68rem; font-family:'Cinzel',serif; letter-spacing:1px; cursor:pointer; transition:all 0.2s; }
     .del-btn:hover { border-color:rgba(180,60,60,0.75); color:rgba(220,80,80,1); background:rgba(180,60,60,0.08); }
 
-    /* ─── AVATAR PANEL ─── */
-    #avatar-panel {
-      position:fixed; top:48px; left:0; bottom:0; width:280px;
-      background:var(--panel-bg); border-right:1px solid var(--border);
-      transform:translateX(-100%); transition:transform 0.3s cubic-bezier(.4,0,.2,1);
-      z-index:150; overflow-y:auto; padding:1.5rem; backdrop-filter:blur(14px);
-    }
+    #avatar-panel { position:fixed; top:48px; left:0; bottom:0; width:280px; background:var(--panel-bg); border-right:1px solid var(--border); transform:translateX(-100%); transition:transform 0.3s cubic-bezier(.4,0,.2,1); z-index:150; overflow-y:auto; padding:1.5rem; backdrop-filter:blur(14px); }
     #avatar-panel.open { transform:translateX(0); }
-    #avatar-panel h2 {
-      font-family:'Cinzel',serif; font-size:0.95rem; color:var(--gold);
-      margin-bottom:1.4rem; padding-bottom:0.75rem; border-bottom:1px solid var(--border);
-      display:flex; align-items:center; justify-content:space-between;
-    }
+    #avatar-panel h2 { font-family:'Cinzel',serif; font-size:0.95rem; color:var(--gold); margin-bottom:1.4rem; padding-bottom:0.75rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
     .swatches { display:flex; flex-wrap:wrap; gap:0.45rem; }
-    .swatch {
-      width:26px; height:26px; border-radius:50%; cursor:pointer;
-      border:2px solid transparent; transition:transform 0.15s, border-color 0.15s;
-    }
+    .swatch { width:26px; height:26px; border-radius:50%; cursor:pointer; border:2px solid transparent; transition:transform 0.15s, border-color 0.15s; }
     .swatch:hover { transform:scale(1.18); }
     .swatch.on { border-color:var(--gold) !important; }
-
     .toggle-row { display:flex; align-items:center; gap:0.75rem; padding:7px 0; }
     .toggle-label { font-size:0.8rem; flex:1; }
-    .tgl {
-      width:34px; height:18px; border-radius:9px;
-      background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15);
-      cursor:pointer; position:relative; transition:background 0.2s, border-color 0.2s;
-    }
+    .tgl { width:34px; height:18px; border-radius:9px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); cursor:pointer; position:relative; transition:background 0.2s, border-color 0.2s; }
     .tgl.on { background:rgba(201,162,39,0.35); border-color:var(--gold); }
-    .tgl::after {
-      content:''; position:absolute; top:2px; left:2px;
-      width:12px; height:12px; border-radius:50%;
-      background:rgba(255,255,255,0.35); transition:transform 0.2s, background 0.2s;
-    }
+    .tgl::after { content:''; position:absolute; top:2px; left:2px; width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,0.35); transition:transform 0.2s, background 0.2s; }
     .tgl.on::after { transform:translateX(16px); background:var(--gold); }
 
-    /* ─── ADD MODAL ─── */
-    #add-modal {
-      position:fixed; inset:0; background:rgba(0,0,0,0.55);
-      display:flex; align-items:center; justify-content:center;
-      z-index:300; opacity:0; pointer-events:none; transition:opacity 0.2s;
-    }
+    #add-modal { position:fixed; inset:0; background:rgba(0,0,0,0.55); display:flex; align-items:center; justify-content:center; z-index:300; opacity:0; pointer-events:none; transition:opacity 0.2s; }
     #add-modal.open { opacity:1; pointer-events:all; }
-    .modal-box {
-      background:#0b1828; border:1px solid var(--border); border-radius:8px;
-      padding:1.8rem; width:330px; box-shadow:0 24px 64px rgba(0,0,0,0.6);
-    }
+    .modal-box { background:#0b1828; border:1px solid var(--border); border-radius:8px; padding:1.8rem; width:330px; box-shadow:0 24px 64px rgba(0,0,0,0.6); }
     .modal-box h3 { font-family:'Cinzel',serif; color:var(--gold); font-size:0.95rem; margin-bottom:1rem; }
-    .modal-inp {
-      width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border);
-      color:var(--text); padding:8px 11px; border-radius:4px;
-      font-family:'IM Fell English',serif; font-size:0.9rem; margin-bottom:1rem;
-    }
+    .modal-inp { width:100%; background:rgba(255,255,255,0.05); border:1px solid var(--border); color:var(--text); padding:8px 11px; border-radius:4px; font-family:'IM Fell English',serif; font-size:0.9rem; margin-bottom:1rem; }
     .modal-inp:focus { outline:none; border-color:var(--gold-dim); }
     .modal-btns { display:flex; gap:0.6rem; justify-content:flex-end; }
-    .m-cancel {
-      background:none; border:1px solid rgba(255,255,255,0.1); color:var(--text-dim);
-      padding:5px 15px; border-radius:4px; cursor:pointer;
-      font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:1px;
-    }
-    .m-confirm {
-      background:rgba(201,162,39,0.12); border:1px solid var(--gold-dim);
-      color:var(--gold); padding:5px 15px; border-radius:4px; cursor:pointer;
-      font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:1px; transition:background 0.2s;
-    }
+    .m-cancel  { background:none; border:1px solid rgba(255,255,255,0.1); color:var(--text-dim); padding:5px 15px; border-radius:4px; cursor:pointer; font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:1px; }
+    .m-confirm { background:rgba(201,162,39,0.12); border:1px solid var(--gold-dim); color:var(--gold); padding:5px 15px; border-radius:4px; cursor:pointer; font-family:'Cinzel',serif; font-size:0.68rem; letter-spacing:1px; transition:background 0.2s; }
     .m-confirm:hover { background:rgba(201,162,39,0.22); }
 
-    /* ─── TOAST ─── */
-    #toast {
-      position:fixed; bottom:1.75rem; left:50%;
-      transform:translateX(-50%) translateY(14px);
-      background:rgba(8,16,30,0.95); border:1px solid var(--gold-dim);
-      color:var(--text); padding:7px 18px; border-radius:18px;
-      font-size:0.76rem; font-family:'Cinzel',serif; letter-spacing:1px;
-      opacity:0; transition:opacity 0.28s, transform 0.28s; z-index:500; pointer-events:none;
-    }
+    #toast { position:fixed; bottom:1.75rem; left:50%; transform:translateX(-50%) translateY(14px); background:rgba(8,16,30,0.95); border:1px solid var(--gold-dim); color:var(--text); padding:7px 18px; border-radius:18px; font-size:0.76rem; font-family:'Cinzel',serif; letter-spacing:1px; opacity:0; transition:opacity 0.28s, transform 0.28s; z-index:500; pointer-events:none; }
     #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    #completed-panel { position:fixed; top:48px; left:0; right:0; bottom:0; background:rgba(4,9,20,0.97); z-index:160; backdrop-filter:blur(14px); display:none; flex-direction:column; padding:2rem; overflow-y:auto; }
+    #completed-panel.open { display:flex; }
+    #completed-panel h2 { font-family:'Cinzel',serif; color:var(--gold); font-size:1.1rem; margin-bottom:1.5rem; padding-bottom:0.75rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .completed-grid { display:flex; flex-wrap:wrap; gap:1rem; }
+    .completed-card { background:rgba(26,96,32,0.15); border:1px solid rgba(60,220,80,0.25); border-radius:10px; padding:1rem 1.2rem; width:280px; cursor:pointer; transition:background 0.2s, border-color 0.2s; }
+    .completed-card:hover { background:rgba(26,96,32,0.28); border-color:rgba(60,220,80,0.5); }
+    .completed-card h3 { font-family:'Cinzel',serif; font-size:0.9rem; color:#60f080; margin-bottom:0.5rem; }
+    .completed-card .cc-meta { font-size:0.72rem; color:var(--text-dim); margin-bottom:0.5rem; }
+    .completed-card .cc-notes { font-size:0.8rem; color:var(--text); font-style:italic; opacity:0.7; }
+    .completed-card .cc-restore { margin-top:0.75rem; background:none; border:1px solid rgba(201,162,39,0.3); color:var(--gold-dim); padding:4px 12px; border-radius:4px; font-family:'Cinzel',serif; font-size:0.65rem; letter-spacing:1px; cursor:pointer; transition:all 0.2s; }
+    .completed-card .cc-restore:hover { border-color:var(--gold); color:var(--gold); }
+    .completed-empty { color:var(--text-dim); font-style:italic; font-size:0.9rem; opacity:0.5; }
 
     ::-webkit-scrollbar { width:3px; }
     ::-webkit-scrollbar-thumb { background:rgba(201,162,39,0.18); border-radius:2px; }
@@ -325,46 +200,51 @@
 <canvas id="starfield"></canvas>
 
 <div id="toolbar">
-  <span class="logo">✦ The Constellation</span>
+  <span class="logo">✦ Azmyth's Constellation</span>
   <button class="tb-btn" id="btn-connect">⟡ Connect</button>
   <button class="tb-btn" id="btn-add">+ Bubble</button>
+  <button class="tb-btn" id="btn-completed">✓ Completed <span id="completed-count"></span></button>
 </div>
 
 <div id="canvas">
-  <svg id="connections-svg"></svg>
-  <div id="avatar-node">
-    <div id="avatar-glow"></div>
-    <canvas id="avatar-canvas" width="60" height="90"></canvas>
-    <div id="avatar-label">you are here</div>
+  <div id="canvas-inner">
+    <svg id="connections-svg">
+      <g id="ring-layer"></g>
+      <g id="perm-lines"></g>
+      <g id="hover-lines"></g>
+    </svg>
+    <div id="avatar-node">
+      <div id="avatar-glow"></div>
+      <canvas id="avatar-canvas" width="60" height="90"></canvas>
+      <div id="avatar-label">Azmyth</div>
+    </div>
   </div>
 </div>
 
-<!-- Bubble detail panel -->
 <div id="panel">
   <div class="panel-head">
     <div class="panel-title" id="p-title">—</div>
     <button class="x-btn" id="panel-close">✕</button>
   </div>
-
   <div class="p-section">
     <div class="p-label">Status</div>
     <div class="status-row" id="status-row">
-      <button class="s-btn" data-s="not-started">not started</button>
+      <button class="s-btn" data-s="not-started">someday</button>
       <button class="s-btn" data-s="simmering">simmering</button>
-      <button class="s-btn" data-s="in-progress">in progress</button>
-      <button class="s-btn" data-s="done">done</button>
+      <button class="s-btn" data-s="in-progress">in motion</button>
+      <button class="s-btn" data-s="done">done ✓</button>
     </div>
   </div>
-
   <div class="p-section">
-    <div class="p-label">Importance</div>
+    <div class="p-label">Orbit Ring · Importance</div>
     <div class="stars-row" id="stars-row">
       <button class="star" data-n="1">★</button>
       <button class="star" data-n="2">★</button>
       <button class="star" data-n="3">★</button>
+      <button class="star" data-n="4">★</button>
+      <button class="star" data-n="5">★</button>
     </div>
   </div>
-
   <div class="p-section">
     <div class="p-label">To-Do</div>
     <ul class="todo-list" id="todo-list"></ul>
@@ -373,24 +253,29 @@
       <button class="add-btn" id="todo-add">+</button>
     </div>
   </div>
-
   <div class="p-section">
     <div class="p-label">Notes</div>
     <textarea class="notes-ta" id="notes-ta" placeholder="thoughts, context, magic…"></textarea>
   </div>
-
   <div class="p-section">
     <div class="p-label">Connected To</div>
     <div class="conn-tags" id="conn-tags"></div>
+    <div class="conn-add-row">
+      <select id="conn-select"><option value="">connect to…</option></select>
+      <select id="conn-type">
+        <option value="vibes">vibes</option>
+        <option value="funds">funds it</option>
+        <option value="requires">requires first</option>
+      </select>
+      <button class="add-btn" id="conn-add-btn">Link</button>
+    </div>
   </div>
-
   <div class="p-section">
     <div class="p-label">Danger</div>
     <button class="del-btn" id="del-bubble">Delete This Bubble</button>
   </div>
 </div>
 
-<!-- Avatar style panel -->
 <div id="avatar-panel">
   <h2>
     <span>Your Avatar</span>
@@ -421,7 +306,14 @@
   </div>
 </div>
 
-<!-- Add bubble modal -->
+<div id="completed-panel">
+  <h2>
+    <span>✓ Completed</span>
+    <button class="x-btn" id="completed-close">✕</button>
+  </h2>
+  <div class="completed-grid" id="completed-grid"></div>
+</div>
+
 <div id="add-modal">
   <div class="modal-box">
     <h3>New Bubble</h3>
@@ -437,7 +329,7 @@
 
 <script>
 // ================================================================
-// DATA
+// CONSTANTS
 // ================================================================
 
 const LIFE_AREAS = [
@@ -446,36 +338,49 @@ const LIFE_AREAS = [
   'Writing About My Life','Learning Fans','Learning DJ','Sex?',
   'Circling / LVL UP','Moving Out','Staying in TX','Cleaning House',
   'Painting / Art','Meditation','Techless Me Time','Getting Rid of Phone?',
-  'Getting Hair Done','Tattoos?','Replying to Everyone','Journaling','Reading'
+  'Getting Hair Done','Tattoos?','Replying to Everyone','Journaling','Reading',
+  'Butoh','Physical Want'
 ];
 
 const SKIN_TONES  = ['#f8d5b4','#eec393','#d4956a','#b87040','#8b5e3c','#5c3318'];
 const HAIR_COLORS = ['#18090a','#3d2314','#8b5e3c','#c8922a','#c84b2a','#2a4a8b','#7a2a9b','#e8d8c0','#4a8b6a','#e060a0'];
 const OUTFIT_COLS = ['#5b3a8c','#2a5b8c','#2a8c5b','#8c2a5b','#8c5b2a','#1a3a1a','#3a1a1a','#1a1a3a'];
 
-// Pixel art character: 12 cols × 18 rows
-// 0=transparent 1=skin 2=hair 3=outfit 4=hat 5=hat_shade
-const BASE_GRID = [
-  [0,0,0,0,4,4,4,0,0,0,0,0],
-  [0,0,0,4,4,4,4,4,0,0,0,0],
-  [0,0,4,4,4,4,4,4,4,0,0,0],
-  [0,5,5,5,5,5,5,5,5,5,5,0],
-  [0,2,2,2,2,2,2,2,2,2,0,0],
-  [0,2,1,1,1,1,1,1,1,2,0,0],
-  [0,2,1,0,1,1,1,0,1,2,0,0],
-  [0,2,1,1,1,0,1,1,1,2,0,0],
-  [0,0,2,2,1,1,1,2,2,0,0,0],
-  [0,0,3,3,3,3,3,3,3,0,0,0],
-  [0,3,3,3,3,3,3,3,3,3,0,0],
-  [3,3,3,3,3,3,3,3,3,3,3,0],
-  [3,3,3,3,3,3,3,3,3,3,3,3],
-  [0,3,3,3,3,3,3,3,3,3,3,0],
-  [0,0,3,3,3,3,3,3,3,3,0,0],
-  [0,0,0,3,3,0,0,3,3,0,0,0],
-  [0,0,0,1,1,0,0,1,1,0,0,0],
-  [0,0,3,3,1,0,0,1,3,3,0,0],
+// 5★ = innermost/most important, 1★ = outermost/background
+const RING_RADII = { 5:165, 4:310, 3:455, 2:600, 1:745 };
+const RING_NAMES = { 5:'essential', 4:'important', 3:'present', 2:'background', 1:'someday' };
+
+// Speed in rad/ms — alternating CW (+) and CCW (-)
+const RING_SPEEDS = { 5:0.00055, 4:-0.00040, 3:0.00028, 2:-0.00018, 1:0.00012 };
+
+// Snap thresholds: midpoints between adjacent rings
+const RING_SNAP = [
+  { stars:5, max: (165 + 310) / 2 },
+  { stars:4, max: (310 + 455) / 2 },
+  { stars:3, max: (455 + 600) / 2 },
+  { stars:2, max: (600 + 745) / 2 },
+  { stars:1, max: Infinity },
 ];
-const SLIM_ROWS = new Set([11,12,13]); // rows hidden when cloak=off
+
+const CONN_STYLES = {
+  funds:    { stroke:'rgba(201,162,39,0.9)',   width:2.5, dash:'none' },
+  requires: { stroke:'rgba(80,160,220,0.85)',  width:2,   dash:'10 4' },
+  vibes:    { stroke:'rgba(160,100,220,0.75)', width:1.5, dash:'3 7'  },
+};
+
+// Pixel art: 12×18, codes: 0=transparent 1=skin 2=hair 3=outfit 4=hat 5=hat_shade
+const BASE_GRID = [
+  [0,0,0,0,4,4,4,0,0,0,0,0],[0,0,0,4,4,4,4,4,0,0,0,0],
+  [0,0,4,4,4,4,4,4,4,0,0,0],[0,5,5,5,5,5,5,5,5,5,5,0],
+  [0,2,2,2,2,2,2,2,2,2,0,0],[0,2,1,1,1,1,1,1,1,2,0,0],
+  [0,2,1,0,1,1,1,0,1,2,0,0],[0,2,1,1,1,0,1,1,1,2,0,0],
+  [0,0,2,2,1,1,1,2,2,0,0,0],[0,0,3,3,3,3,3,3,3,0,0,0],
+  [0,3,3,3,3,3,3,3,3,3,0,0],[3,3,3,3,3,3,3,3,3,3,3,0],
+  [3,3,3,3,3,3,3,3,3,3,3,3],[0,3,3,3,3,3,3,3,3,3,3,0],
+  [0,0,3,3,3,3,3,3,3,3,0,0],[0,0,0,3,3,0,0,3,3,0,0,0],
+  [0,0,0,1,1,0,0,1,1,0,0,0],[0,0,3,3,1,0,0,1,3,3,0,0],
+];
+const SLIM_ROWS = new Set([11,12,13]);
 
 // ================================================================
 // STATE
@@ -484,7 +389,7 @@ const SLIM_ROWS = new Set([11,12,13]); // rows hidden when cloak=off
 let S = {
   bubbles: {},
   connections: [],
-  avatar: { skin:'#d4956a', hair:'#3d2314', outfit:'#5b3a8c', hat:true, cloak:true },
+  avatar: { skin:'#d4956a', hair:'#8b5e3c', outfit:'#5b3a8c', hat:true, cloak:true },
   nextId: 1
 };
 
@@ -495,6 +400,46 @@ let UI = {
   avatarOpen: false,
   panelOpen: false,
 };
+
+let ringOffsets = { 1:0, 2:0, 3:0, 4:0, 5:0 };
+let lastFrameTime = null;
+let lineEls = new Map(); // conn.id → SVGPathElement
+
+// ================================================================
+// UTILS
+// ================================================================
+
+function getCenter() {
+  return { cx: window.innerWidth / 2, cy: (window.innerHeight - 48) / 2 };
+}
+
+function getBubbleSize(stars) {
+  const s = stars || 3;
+  const r = RING_RADII[s];
+  const n = Math.max(1, Object.values(S.bubbles).filter(b =>
+    b.status !== 'done' && (b.stars || 3) === s
+  ).length);
+  const chord = 2 * r * Math.sin(Math.PI / n);
+  return Math.max(82, Math.min(126, Math.floor(chord * 0.80)));
+}
+
+function ageClass(b) {
+  if (!b.lastInteracted) return '';
+  const d = (Date.now() - b.lastInteracted) / 86400000;
+  if (d > 14) return 'aged-3';
+  if (d > 7)  return 'aged-2';
+  if (d > 3)  return 'aged-1';
+  return '';
+}
+
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+let _toastT;
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(_toastT); _toastT = setTimeout(() => el.classList.remove('show'), 2200);
+}
 
 // ================================================================
 // PERSIST
@@ -517,68 +462,87 @@ function load() {
 function shade(hex, amt) {
   const n = parseInt(hex.replace('#',''), 16);
   const clamp = v => Math.max(0, Math.min(255, v));
-  const r = clamp((n>>16) + amt);
-  const g = clamp(((n>>8)&0xff) + amt);
-  const b = clamp((n&0xff) + amt);
-  return '#' + ((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
+  const r = clamp((n>>16)+amt), g = clamp(((n>>8)&0xff)+amt), b = clamp((n&0xff)+amt);
+  return '#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
 }
 
 function drawAvatar() {
   const cv = document.getElementById('avatar-canvas');
   const ctx = cv.getContext('2d');
   const sc = 5;
-  const { skin, hair, outfit, hat, cloak } = S.avatar;
-
-  const map = {
-    1: skin,
-    2: hair,
-    3: outfit,
-    4: hat ? shade(outfit, -30) : null,
-    5: hat ? shade(outfit, -55) : null,
-  };
-
-  ctx.clearRect(0, 0, cv.width, cv.height);
-
-  BASE_GRID.forEach((row, ri) => {
-    row.forEach((ci, col) => {
-      if (!ci) return;
-      if (ci === 3 && !cloak && SLIM_ROWS.has(ri)) return;
-      const color = map[ci];
-      if (!color) return;
-      ctx.fillStyle = color;
-      ctx.fillRect(col * sc, ri * sc, sc, sc);
-    });
-  });
+  cv.width = 60; cv.height = 90;
+  const { skin, hair, outfit, hat=true, cloak=true } = S.avatar;
+  const map = { 1:skin, 2:hair, 3:cloak?outfit:null, 4:hat?shade(outfit,-30):null, 5:hat?shade(outfit,-55):null };
+  ctx.clearRect(0,0,cv.width,cv.height);
+  BASE_GRID.forEach((row,ri) => row.forEach((ci,col) => {
+    if (!ci) return;
+    if (ci===3 && !cloak && SLIM_ROWS.has(ri)) return;
+    const color = map[ci]; if (!color) return;
+    ctx.fillStyle = color;
+    ctx.fillRect(col*sc, ri*sc, sc, sc);
+  }));
 }
 
 // ================================================================
-// INITIAL BUBBLE LAYOUT
+// ANIMATION — ring spinning + live position updates
 // ================================================================
 
-function initBubbles() {
-  const cx = window.innerWidth / 2;
-  const cy = 48 + (window.innerHeight - 48) / 2;
+function getVisualPos(b, cx, cy) {
+  const stars = b.stars || 3;
+  const r = RING_RADII[stars];
+  const angle = (b.angle || 0) + ringOffsets[stars];
+  return { x: cx + Math.cos(angle) * r, y: cy + Math.sin(angle) * r };
+}
 
-  const rings = [
-    { n:8,  r:160 },
-    { n:10, r:290 },
-    { n:8,  r:415 },
-  ];
+function bezierPts(x1, y1, x2, y2) {
+  const dx = x2-x1, dy = y2-y1, dist = Math.sqrt(dx*dx+dy*dy)||1;
+  const bend = Math.min(dist*0.28, 70), px = -dy/dist*bend, py = dx/dist*bend;
+  return `M${x1} ${y1} C${x1+dx*.33+px} ${y1+dy*.33+py},${x1+dx*.67+px} ${y1+dy*.67+py},${x2} ${y2}`;
+}
 
-  let idx = 0;
-  rings.forEach(({ n, r }) => {
-    for (let i = 0; i < n && idx < LIFE_AREAS.length; i++, idx++) {
-      const angle = (2*Math.PI/n)*i - Math.PI/2;
-      const id = 'b' + S.nextId++;
-      S.bubbles[id] = {
-        id, label: LIFE_AREAS[idx],
-        x: Math.round(cx + Math.cos(angle) * r),
-        y: Math.round(cy + Math.sin(angle) * r),
-        status: 'not-started', stars: 1,
-        todos: [], notes: '', connections: []
-      };
+function bezier(A, B) {
+  const { cx, cy } = getCenter();
+  const a = getVisualPos(A, cx, cy), b = getVisualPos(B, cx, cy);
+  return bezierPts(a.x, a.y, b.x, b.y);
+}
+
+function startAnimLoop() {
+  function frame(ts) {
+    if (lastFrameTime !== null) {
+      const dt = Math.min(ts - lastFrameTime, 100); // cap at 100ms to avoid big jumps
+      for (let s = 1; s <= 5; s++) {
+        ringOffsets[s] = (ringOffsets[s] + RING_SPEEDS[s] * dt);
+        if (ringOffsets[s] >  Math.PI*2) ringOffsets[s] -= Math.PI*2;
+        if (ringOffsets[s] < -Math.PI*2) ringOffsets[s] += Math.PI*2;
+      }
     }
-  });
+    lastFrameTime = ts;
+
+    const { cx, cy } = getCenter();
+
+    // Update bubble DOM positions
+    Object.values(S.bubbles).forEach(b => {
+      if (b.status === 'done') return;
+      const el = document.querySelector(`.bubble[data-id="${b.id}"]`);
+      if (!el || el.classList.contains('dragging')) return;
+      const { x, y } = getVisualPos(b, cx, cy);
+      el.style.left = x + 'px';
+      el.style.top  = y + 'px';
+    });
+
+    // Update SVG connection lines
+    lineEls.forEach((path, cid) => {
+      const conn = S.connections.find(c => c.id === cid);
+      if (!conn) return;
+      const A = S.bubbles[conn.from], B = S.bubbles[conn.to];
+      if (!A || !B || A.status === 'done' || B.status === 'done') return;
+      const a = getVisualPos(A, cx, cy), b2 = getVisualPos(B, cx, cy);
+      path.setAttribute('d', bezierPts(a.x, a.y, b2.x, b2.y));
+    });
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 }
 
 // ================================================================
@@ -586,117 +550,210 @@ function initBubbles() {
 // ================================================================
 
 function renderAll() {
+  renderRings();
   renderBubbles();
   renderLines();
 }
 
+function renderRings() {
+  const { cx, cy } = getCenter();
+  const ns = 'http://www.w3.org/2000/svg';
+  const g = document.getElementById('ring-layer');
+  g.innerHTML = '';
+
+  for (let s = 1; s <= 5; s++) {
+    const r = RING_RADII[s];
+    const alpha = 0.04 + (s - 1) * 0.012;
+    const circle = document.createElementNS(ns, 'circle');
+    circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', r);
+    circle.setAttribute('fill', 'none');
+    circle.setAttribute('stroke', `rgba(201,162,39,${alpha})`);
+    circle.setAttribute('stroke-width', '1');
+    circle.setAttribute('stroke-dasharray', '4 11');
+    g.appendChild(circle);
+
+    const text = document.createElementNS(ns, 'text');
+    text.setAttribute('x', cx);
+    text.setAttribute('y', cy - r - 8);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('class', 'ring-label');
+    text.textContent = '★'.repeat(s) + ' · ' + RING_NAMES[s];
+    g.appendChild(text);
+  }
+}
+
 function renderBubbles() {
-  const canvas = document.getElementById('canvas');
-  canvas.querySelectorAll('.bubble').forEach(e => e.remove());
+  const inner = document.getElementById('canvas-inner');
+  inner.querySelectorAll('.bubble').forEach(e => e.remove());
+  document.getElementById('canvas').classList.toggle('connect-mode', UI.connectMode);
+  updateCompletedCount();
 
-  canvas.classList.toggle('connect-mode', UI.connectMode);
+  const { cx, cy } = getCenter();
 
-  Object.values(S.bubbles).forEach(b => {
+  Object.values(S.bubbles).filter(b => b.status !== 'done').forEach(b => {
     const el = document.createElement('div');
     el.className = 'bubble';
-    el.dataset.id = b.id;
-    el.dataset.stars = b.stars || 1;
+    el.dataset.id     = b.id;
+    el.dataset.stars  = b.stars || 3;
     el.dataset.status = b.status || 'not-started';
 
-    const hasContent = (b.todos && b.todos.length > 0) || (b.notes && b.notes.trim());
-    if (hasContent) el.classList.add('has-content');
+    if ((b.todos&&b.todos.length>0)||(b.notes&&b.notes.trim())) el.classList.add('has-content');
     if (UI.selected === b.id) el.classList.add('selected');
     if (UI.connectingFrom === b.id) el.classList.add('connect-source');
 
-    el.style.left = b.x + 'px';
-    el.style.top  = b.y + 'px';
+    const age = ageClass(b);
+    if (age) el.classList.add(age);
+
+    const sz = getBubbleSize(b.stars || 3);
+    el.style.width    = sz + 'px';
+    el.style.height   = sz + 'px';
+    el.style.fontSize = Math.max(11, Math.floor(sz * 0.107)) + 'px';
+
+    // Initial position from current visual pos (animation loop will take over)
+    const { x, y } = getVisualPos(b, cx, cy);
+    el.style.left = x + 'px';
+    el.style.top  = y + 'px';
     el.textContent = b.label;
 
+    el.addEventListener('mouseenter', () => showHoverLines(b.id));
+    el.addEventListener('mouseleave', clearHoverLines);
     el.addEventListener('mousedown', onBubbleMD);
-    canvas.appendChild(el);
+    inner.appendChild(el);
   });
 }
 
 function renderLines() {
-  const svg = document.getElementById('connections-svg');
-  svg.querySelectorAll('.conn-path').forEach(e => e.remove());
+  const g = document.getElementById('perm-lines');
+  g.innerHTML = '';
+  lineEls.clear();
+  const ns = 'http://www.w3.org/2000/svg';
+  const { cx, cy } = getCenter();
 
   S.connections.forEach(conn => {
-    const A = S.bubbles[conn.from];
-    const B = S.bubbles[conn.to];
-    if (!A || !B) return;
-
-    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+    const A = S.bubbles[conn.from], B = S.bubbles[conn.to];
+    if (!A || !B || A.status === 'done' || B.status === 'done') return;
+    const style = CONN_STYLES[conn.type] || CONN_STYLES.vibes;
+    const path = document.createElementNS(ns, 'path');
     path.classList.add('conn-path');
-    path.setAttribute('d', bezier(A, B));
-    path.dataset.cid = conn.id;
-
-    path.addEventListener('click', e => {
-      e.stopPropagation();
-      removeConn(conn.id);
-      toast('Connection removed');
-    });
-
-    svg.appendChild(path);
+    const a = getVisualPos(A, cx, cy), b = getVisualPos(B, cx, cy);
+    path.setAttribute('d', bezierPts(a.x, a.y, b.x, b.y));
+    path.setAttribute('stroke', style.stroke);
+    path.setAttribute('stroke-width', style.width);
+    if (style.dash !== 'none') path.setAttribute('stroke-dasharray', style.dash);
+    path.dataset.cid  = conn.id;
+    path.dataset.type = conn.type || 'vibes';
+    path.dataset.from = conn.from;
+    path.dataset.to   = conn.to;
+    path.addEventListener('click', e => { e.stopPropagation(); removeConn(conn.id); toast('Connection removed'); });
+    g.appendChild(path);
+    lineEls.set(conn.id, path);
   });
 }
 
-function bezier(A, B) {
-  const x1=A.x, y1=A.y, x2=B.x, y2=B.y;
-  const dx=x2-x1, dy=y2-y1;
-  const dist = Math.sqrt(dx*dx+dy*dy) || 1;
-  const bend = Math.min(dist*0.28, 70);
-  const px = -dy/dist*bend, py = dx/dist*bend;
-  return `M${x1} ${y1} C${x1+dx*.33+px} ${y1+dy*.33+py},${x1+dx*.67+px} ${y1+dy*.67+py},${x2} ${y2}`;
+// ── Hover constellation lines ──────────────────────────────────────
+function showHoverLines(bubbleId) {
+  clearHoverLines();
+  const ns  = 'http://www.w3.org/2000/svg';
+  const hg  = document.getElementById('hover-lines');
+  const ids = new Set(S.connections.filter(c=>c.from===bubbleId||c.to===bubbleId).map(c=>c.id));
+
+  document.querySelectorAll('.conn-path').forEach(p => {
+    if (ids.has(p.dataset.cid)) p.classList.add('hover-bright');
+    else p.classList.add('hover-dim');
+  });
+
+  S.connections.filter(c=>c.from===bubbleId||c.to===bubbleId).forEach((conn, i) => {
+    const A = S.bubbles[conn.from], B = S.bubbles[conn.to];
+    if (!A || !B) return;
+    const style = CONN_STYLES[conn.type] || CONN_STYLES.vibes;
+    const path  = document.createElementNS(ns, 'path');
+    path.setAttribute('d', bezier(A, B));
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', style.stroke.replace(/[\d.]+\)$/, '1)'));
+    path.setAttribute('stroke-width', style.width + 1);
+    path.setAttribute('stroke-dasharray', '2000');
+    path.setAttribute('stroke-dashoffset', '2000');
+    path.style.filter = `drop-shadow(0 0 5px ${style.stroke})`;
+    hg.appendChild(path);
+    setTimeout(() => {
+      path.style.transition = 'stroke-dashoffset 0.55s cubic-bezier(0.4,0,0.2,1)';
+      path.style.strokeDashoffset = '0';
+    }, i * 70);
+  });
 }
 
-function bubbleEl(id) { return document.querySelector(`.bubble[data-id="${id}"]`); }
-
-function refreshBubble(id) {
-  const b = S.bubbles[id];
-  if (!b) return;
-  const el = bubbleEl(id);
-  if (!el) return;
-  el.dataset.stars  = b.stars || 1;
-  el.dataset.status = b.status || 'not-started';
-  const hasContent  = (b.todos&&b.todos.length>0)||(b.notes&&b.notes.trim());
-  el.classList.toggle('has-content', !!hasContent);
+function clearHoverLines() {
+  document.getElementById('hover-lines').innerHTML = '';
+  document.querySelectorAll('.conn-path').forEach(p => p.classList.remove('hover-bright','hover-dim'));
 }
 
 // ================================================================
-// DRAG
+// DRAG — release snaps to nearest star ring
 // ================================================================
 
 function onBubbleMD(e) {
   if (e.button !== 0) return;
   const el = e.currentTarget;
   const id = el.dataset.id;
-
   if (UI.connectMode) { handleConnectClick(id); return; }
 
-  let moved = false;
-  let lx = e.clientX, ly = e.clientY;
+  const b = S.bubbles[id];
+  const { cx, cy } = getCenter();
+  const vp = getVisualPos(b, cx, cy);
+  let moved = false, lx = e.clientX, ly = e.clientY;
+  let dragX = vp.x, dragY = vp.y;
 
   const mm = e2 => {
-    const dx=e2.clientX-lx, dy=e2.clientY-ly;
-    if (!moved && Math.abs(e2.clientX-e.clientX)+Math.abs(e2.clientY-e.clientY)>4) {
-      moved = true; el.classList.add('dragging');
+    const dx = e2.clientX - lx, dy = e2.clientY - ly;
+    if (!moved && Math.abs(e2.clientX-e.clientX)+Math.abs(e2.clientY-e.clientY) > 4) {
+      moved = true;
+      el.classList.add('dragging');
     }
     if (moved) {
-      S.bubbles[id].x += dx; S.bubbles[id].y += dy;
-      el.style.left = S.bubbles[id].x+'px';
-      el.style.top  = S.bubbles[id].y+'px';
-      renderLines();
+      dragX += dx; dragY += dy;
+      el.style.left = dragX + 'px';
+      el.style.top  = dragY + 'px';
     }
-    lx=e2.clientX; ly=e2.clientY;
+    lx = e2.clientX; ly = e2.clientY;
   };
 
   const mu = () => {
     document.removeEventListener('mousemove', mm);
     document.removeEventListener('mouseup', mu);
     el.classList.remove('dragging');
-    if (moved) save();
-    else openPanel(id);
+
+    if (moved) {
+      const { cx: cx2, cy: cy2 } = getCenter();
+      const dist = Math.sqrt((dragX - cx2) ** 2 + (dragY - cy2) ** 2);
+
+      // Find nearest ring
+      let newStars = 1;
+      for (const { stars, max } of RING_SNAP) {
+        if (dist < max) { newStars = stars; break; }
+      }
+
+      const oldStars = b.stars || 3;
+      b.stars = newStars;
+      el.dataset.stars = newStars;
+
+      // Store intrinsic angle (remove current ring offset so visual pos stays where dropped)
+      b.angle = Math.atan2(dragY - cy2, dragX - cx2) - ringOffsets[newStars];
+
+      if (newStars !== oldStars) {
+        toast(`★${'★'.repeat(newStars-1)} → ring ${newStars}`);
+        const sz = getBubbleSize(newStars);
+        el.style.width    = sz + 'px';
+        el.style.height   = sz + 'px';
+        el.style.fontSize = Math.max(11, Math.floor(sz * 0.107)) + 'px';
+        if (UI.selected === id) {
+          document.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('on', i < newStars));
+        }
+      }
+
+      save();
+    } else {
+      openPanel(id);
+    }
   };
 
   document.addEventListener('mousemove', mm);
@@ -710,45 +767,37 @@ function onBubbleMD(e) {
 
 function handleConnectClick(id) {
   if (!UI.connectingFrom) {
-    UI.connectingFrom = id;
-    renderBubbles();
-    toast('Now click another bubble to connect');
-    return;
+    UI.connectingFrom = id; renderBubbles(); toast('Click another bubble to connect'); return;
   }
-  if (UI.connectingFrom === id) {
-    UI.connectingFrom = null; renderBubbles(); return;
-  }
+  if (UI.connectingFrom === id) { UI.connectingFrom = null; renderBubbles(); return; }
 
-  const a=UI.connectingFrom, b=id;
-  const exists = S.connections.some(c=>(c.from===a&&c.to===b)||(c.from===b&&c.to===a));
+  const a = UI.connectingFrom, b = id;
+  const exists = S.connections.some(c => (c.from===a&&c.to===b)||(c.from===b&&c.to===a));
 
   if (!exists) {
-    const cid = 'c'+Date.now();
-    S.connections.push({id:cid, from:a, to:b});
-    if (!S.bubbles[a].connections) S.bubbles[a].connections=[];
-    if (!S.bubbles[b].connections) S.bubbles[b].connections=[];
+    const cid = 'c' + Date.now();
+    S.connections.push({ id:cid, from:a, to:b, type:'vibes' });
+    if (!S.bubbles[a].connections) S.bubbles[a].connections = [];
+    if (!S.bubbles[b].connections) S.bubbles[b].connections = [];
     S.bubbles[a].connections.push(b);
     S.bubbles[b].connections.push(a);
-    save(); toast('Connected!');
+    toast('Connected!');
+    UI.connectingFrom = null;
+    settleLayout();
   } else {
-    toast('Already connected');
+    toast('Already connected'); UI.connectingFrom = null; renderBubbles();
   }
-
-  UI.connectingFrom = null;
-  renderBubbles();
   if (UI.selected) renderPanelConns();
 }
 
 function removeConn(cid) {
-  const conn = S.connections.find(c=>c.id===cid);
-  if (!conn) return;
-  S.connections = S.connections.filter(c=>c.id!==cid);
-  const clean = (id, other) => {
-    if (S.bubbles[id]) S.bubbles[id].connections = (S.bubbles[id].connections||[]).filter(x=>x!==other);
-  };
+  const conn = S.connections.find(c => c.id === cid); if (!conn) return;
+  S.connections = S.connections.filter(c => c.id !== cid);
+  const clean = (id, other) => { if (S.bubbles[id]) S.bubbles[id].connections = (S.bubbles[id].connections||[]).filter(x=>x!==other); };
   clean(conn.from, conn.to); clean(conn.to, conn.from);
-  save(); renderLines();
+  renderLines();
   if (UI.selected) renderPanelConns();
+  save();
 }
 
 // ================================================================
@@ -756,81 +805,86 @@ function removeConn(cid) {
 // ================================================================
 
 function openPanel(id) {
-  const b = S.bubbles[id];
-  if (!b) return;
+  const b = S.bubbles[id]; if (!b) return;
   UI.selected = id; UI.panelOpen = true;
+  b.lastInteracted = Date.now(); save();
 
   document.getElementById('p-title').textContent = b.label;
-
-  // status
-  document.querySelectorAll('.s-btn').forEach(btn =>
-    btn.classList.toggle('on', btn.dataset.s === (b.status||'not-started'))
-  );
-
-  // stars
-  const stars = b.stars||1;
-  document.querySelectorAll('.star').forEach(btn =>
-    btn.classList.toggle('on', parseInt(btn.dataset.n) <= stars)
-  );
-
+  document.querySelectorAll('.s-btn').forEach(btn => btn.classList.toggle('on', btn.dataset.s === (b.status||'not-started')));
+  const stars = b.stars || 3;
+  document.querySelectorAll('.star').forEach(btn => btn.classList.toggle('on', parseInt(btn.dataset.n) <= stars));
   renderTodos();
-  document.getElementById('notes-ta').value = b.notes||'';
+  document.getElementById('notes-ta').value = b.notes || '';
   renderPanelConns();
-
   document.getElementById('panel').classList.add('open');
-  document.querySelectorAll('.bubble').forEach(el =>
-    el.classList.toggle('selected', el.dataset.id===id)
-  );
+  document.querySelectorAll('.bubble').forEach(el => el.classList.toggle('selected', el.dataset.id === id));
 }
 
 function closePanel() {
-  UI.panelOpen=false; UI.selected=null;
+  UI.panelOpen = false; UI.selected = null;
   document.getElementById('panel').classList.remove('open');
-  document.querySelectorAll('.bubble').forEach(el=>el.classList.remove('selected'));
+  document.querySelectorAll('.bubble').forEach(el => el.classList.remove('selected'));
+}
+
+function refreshBubble(id) {
+  const b = S.bubbles[id]; if (!b) return;
+  const el = document.querySelector(`.bubble[data-id="${id}"]`); if (!el) return;
+  el.dataset.stars  = b.stars  || 3;
+  el.dataset.status = b.status || 'not-started';
+  el.classList.toggle('has-content', !!(b.todos&&b.todos.length>0)||(b.notes&&b.notes.trim()));
+  ['aged-1','aged-2','aged-3'].forEach(c => el.classList.remove(c));
+  const ac = ageClass(b); if (ac) el.classList.add(ac);
 }
 
 function renderTodos() {
-  const id=UI.selected; if(!id) return;
-  const b=S.bubbles[id]; const list=document.getElementById('todo-list');
-  list.innerHTML='';
-  (b.todos||[]).forEach((t,i)=>{
-    const li=document.createElement('li');
-    li.className='todo-item'+(t.done?' done':'');
-    const uid='td'+id+i;
-    li.innerHTML=`<input type="checkbox" id="${uid}"${t.done?' checked':''}>`+
-      `<label for="${uid}">${esc(t.text)}</label>`+
-      `<button class="del-todo" data-i="${i}">✕</button>`;
-    li.querySelector('input').onchange=e=>{
-      b.todos[i].done=e.target.checked;
-      li.classList.toggle('done',e.target.checked);
-      save(); refreshBubble(id);
+  const id = UI.selected; if (!id) return;
+  const b = S.bubbles[id];
+  const list = document.getElementById('todo-list');
+  list.innerHTML = '';
+  (b.todos||[]).forEach((t,i) => {
+    const li = document.createElement('li');
+    li.className = 'todo-item' + (t.done?' done':'');
+    const uid = 'td'+id+i;
+    li.innerHTML = `<input type="checkbox" id="${uid}"${t.done?' checked':''}><label for="${uid}">${esc(t.text)}</label><button class="del-todo" data-i="${i}">✕</button>`;
+    li.querySelector('input').onchange = e => {
+      b.todos[i].done = e.target.checked;
+      li.classList.toggle('done', e.target.checked);
+      b.lastInteracted = Date.now(); save(); refreshBubble(id);
     };
-    li.querySelector('.del-todo').onclick=()=>{
-      b.todos.splice(i,1); save(); renderTodos(); refreshBubble(id);
-    };
+    li.querySelector('.del-todo').onclick = () => { b.todos.splice(i,1); save(); renderTodos(); refreshBubble(id); };
     list.appendChild(li);
   });
 }
 
 function renderPanelConns() {
-  const id=UI.selected; if(!id) return;
-  const b=S.bubbles[id]; const wrap=document.getElementById('conn-tags');
-  wrap.innerHTML='';
-  const conns=b.connections||[];
-  if(!conns.length){
-    wrap.innerHTML='<span style="font-size:.72rem;opacity:.35;font-style:italic">none yet</span>';
-    return;
+  const id = UI.selected; if (!id) return;
+  const b = S.bubbles[id];
+  const wrap = document.getElementById('conn-tags');
+  wrap.innerHTML = '';
+  const conns = b.connections || [];
+  if (!conns.length) {
+    wrap.innerHTML = '<span style="font-size:.72rem;opacity:.35;font-style:italic">none yet</span>';
+  } else {
+    conns.forEach(cid => {
+      const cb = S.bubbles[cid]; if (!cb) return;
+      const conn = S.connections.find(c => (c.from===id&&c.to===cid)||(c.from===cid&&c.to===id));
+      const type = conn?.type || 'vibes';
+      const tag = document.createElement('div'); tag.className = 'ctag';
+      tag.innerHTML = `${esc(cb.label)}<span class="ctag-type">${type}</span><button class="ctag-x">✕</button>`;
+      tag.querySelector('.ctag-x').onclick = () => { if (conn) removeConn(conn.id); };
+      wrap.appendChild(tag);
+    });
   }
-  conns.forEach(cid=>{
-    const cb=S.bubbles[cid]; if(!cb) return;
-    const tag=document.createElement('div'); tag.className='ctag';
-    tag.innerHTML=`${esc(cb.label)}<button class="ctag-x">✕</button>`;
-    tag.querySelector('.ctag-x').onclick=()=>{
-      const conn=S.connections.find(c=>(c.from===id&&c.to===cid)||(c.from===cid&&c.to===id));
-      if(conn) removeConn(conn.id);
-    };
-    wrap.appendChild(tag);
-  });
+  const sel = document.getElementById('conn-select');
+  sel.innerHTML = '<option value="">connect to…</option>';
+  Object.values(S.bubbles)
+    .filter(ob => ob.id !== id && ob.status !== 'done' && !(b.connections||[]).includes(ob.id))
+    .sort((a,b2) => a.label.localeCompare(b2.label))
+    .forEach(ob => {
+      const opt = document.createElement('option');
+      opt.value = ob.id; opt.textContent = ob.label;
+      sel.appendChild(opt);
+    });
 }
 
 // ================================================================
@@ -839,28 +893,28 @@ function renderPanelConns() {
 
 function initAvatarPanel() {
   function buildSw(containerId, colors, key) {
-    const wrap=document.getElementById(containerId);
-    colors.forEach(c=>{
-      const sw=document.createElement('div'); sw.className='swatch';
-      sw.style.background=c; sw.style.borderColor='transparent';
-      if(S.avatar[key]===c) sw.classList.add('on');
-      sw.onclick=()=>{
-        S.avatar[key]=c;
-        wrap.querySelectorAll('.swatch').forEach(s=>s.classList.remove('on'));
+    const wrap = document.getElementById(containerId);
+    colors.forEach(c => {
+      const sw = document.createElement('div');
+      sw.className = 'swatch';
+      sw.style.background = c; sw.style.borderColor = 'transparent';
+      if (S.avatar[key] === c) sw.classList.add('on');
+      sw.onclick = () => {
+        S.avatar[key] = c;
+        wrap.querySelectorAll('.swatch').forEach(s => s.classList.remove('on'));
         sw.classList.add('on');
         save(); drawAvatar();
       };
       wrap.appendChild(sw);
     });
   }
-  buildSw('skin-sw', SKIN_TONES, 'skin');
-  buildSw('hair-sw', HAIR_COLORS, 'hair');
+  buildSw('skin-sw',   SKIN_TONES,  'skin');
+  buildSw('hair-sw',   HAIR_COLORS, 'hair');
   buildSw('outfit-sw', OUTFIT_COLS, 'outfit');
-
-  ['hat','cloak'].forEach(k=>{
-    const tgl=document.getElementById('tgl-'+k);
-    tgl.classList.toggle('on', S.avatar[k]);
-    tgl.onclick=()=>{ S.avatar[k]=!S.avatar[k]; tgl.classList.toggle('on',S.avatar[k]); save(); drawAvatar(); };
+  ['hat','cloak'].forEach(k => {
+    const tgl = document.getElementById('tgl-'+k);
+    tgl.classList.toggle('on', S.avatar[k] !== false);
+    tgl.onclick = () => { S.avatar[k] = !S.avatar[k]; tgl.classList.toggle('on', S.avatar[k]); save(); drawAvatar(); };
   });
 }
 
@@ -869,20 +923,56 @@ function initAvatarPanel() {
 // ================================================================
 
 function initStarfield() {
-  const cv=document.getElementById('starfield');
-  const ctx=cv.getContext('2d');
+  const cv = document.getElementById('starfield'), ctx = cv.getContext('2d');
   function draw() {
-    cv.width=window.innerWidth; cv.height=window.innerHeight;
+    cv.width = window.innerWidth; cv.height = window.innerHeight;
     ctx.clearRect(0,0,cv.width,cv.height);
-    for(let i=0;i<220;i++){
-      const x=Math.random()*cv.width, y=Math.random()*cv.height;
-      const r=Math.random()*1.1+0.1, a=Math.random()*0.55+0.08;
-      ctx.fillStyle=`rgba(232,212,184,${a})`;
+    for (let i = 0; i < 220; i++) {
+      const x=Math.random()*cv.width, y=Math.random()*cv.height, r=Math.random()*1.1+0.1, a=Math.random()*0.55+0.08;
+      ctx.fillStyle = `rgba(232,212,184,${a})`;
       ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill();
     }
   }
   draw();
-  window.addEventListener('resize', draw);
+  window.addEventListener('resize', () => { draw(); positionAvatar(); renderRings(); });
+}
+
+// ================================================================
+// SETTLE LAYOUT — angular repulsion per ring
+// ================================================================
+
+function settleLayout() {
+  const rings = { 1:[], 2:[], 3:[], 4:[], 5:[] };
+  Object.values(S.bubbles).filter(b => b.status !== 'done').forEach(b => {
+    rings[b.stars || 3].push(b);
+  });
+
+  for (let s = 1; s <= 5; s++) {
+    const rbs = rings[s];
+    if (rbs.length <= 1) continue;
+
+    const r   = RING_RADII[s];
+    const sz  = getBubbleSize(s) + 10;
+    const minA = sz / r; // minimum angular separation
+
+    for (let iter = 0; iter < 90; iter++) {
+      for (let i = 0; i < rbs.length; i++) {
+        for (let j = 0; j < rbs.length; j++) {
+          if (i === j) continue;
+          let da = rbs[j].angle - rbs[i].angle;
+          while (da >  Math.PI) da -= Math.PI*2;
+          while (da < -Math.PI) da += Math.PI*2;
+          if (da > 0 && da < minA) {
+            const push = (minA - da) * 0.09;
+            rbs[i].angle -= push;
+            rbs[j].angle += push;
+          }
+        }
+      }
+    }
+  }
+
+  save(); renderAll();
 }
 
 // ================================================================
@@ -890,16 +980,14 @@ function initStarfield() {
 // ================================================================
 
 function addBubble() {
-  const inp=document.getElementById('modal-inp');
-  const label=inp.value.trim(); if(!label) return;
-  const cx=window.innerWidth/2;
-  const cy=48+(window.innerHeight-48)/2;
-  const angle=Math.random()*Math.PI*2;
-  const r=180+Math.random()*120;
-  const id='b'+S.nextId++;
-  S.bubbles[id]={
-    id, label, x:Math.round(cx+Math.cos(angle)*r), y:Math.round(cy+Math.sin(angle)*r),
-    status:'not-started', stars:1, todos:[], notes:'', connections:[]
+  const inp = document.getElementById('modal-inp');
+  const label = inp.value.trim(); if (!label) return;
+  const stars = 3;
+  const angle = Math.random() * Math.PI * 2;
+  const id = 'b' + S.nextId++;
+  S.bubbles[id] = {
+    id, label, angle, stars,
+    status:'not-started', todos:[], notes:'', connections:[], lastInteracted:null
   };
   save(); renderAll();
   document.getElementById('add-modal').classList.remove('open');
@@ -907,16 +995,100 @@ function addBubble() {
 }
 
 function deleteBubble() {
-  const id=UI.selected; if(!id) return;
-  const b=S.bubbles[id];
-  if(!confirm(`Delete "${b.label}"?`)) return;
-  S.connections=S.connections.filter(c=>c.from!==id&&c.to!==id);
-  Object.values(S.bubbles).forEach(b2=>{
-    b2.connections=(b2.connections||[]).filter(x=>x!==id);
-  });
+  const id = UI.selected; if (!id) return;
+  const b = S.bubbles[id];
+  if (!confirm(`Delete "${b.label}"?`)) return;
+  S.connections = S.connections.filter(c => c.from !== id && c.to !== id);
+  Object.values(S.bubbles).forEach(b2 => { b2.connections = (b2.connections||[]).filter(x=>x!==id); });
   delete S.bubbles[id];
-  closePanel(); save(); renderAll();
-  toast('Bubble removed');
+  closePanel(); save(); renderAll(); toast('Bubble removed');
+}
+
+// ================================================================
+// ENSURE LIFE AREAS + ANGLE MIGRATION
+// ================================================================
+
+function initBubbles() {
+  const n = LIFE_AREAS.length;
+  LIFE_AREAS.forEach((label, idx) => {
+    const stars = 3; // default middle ring
+    const angle = (2 * Math.PI / n) * idx - Math.PI / 2;
+    const id = 'b' + S.nextId++;
+    S.bubbles[id] = {
+      id, label, angle, stars,
+      status:'not-started', todos:[], notes:'', connections:[], lastInteracted:null
+    };
+  });
+}
+
+function ensureAngles() {
+  // Migrate old data that has x/y but no angle
+  const { cx, cy } = getCenter();
+  let changed = false;
+  Object.values(S.bubbles).forEach(b => {
+    if (b.angle === undefined || b.angle === null) {
+      const bx = (typeof b.x === 'number') ? b.x : cx;
+      const by = (typeof b.y === 'number') ? b.y : cy;
+      b.angle = Math.atan2(by - cy, bx - cx);
+      if (!b.stars) b.stars = 3;
+      changed = true;
+    }
+    // Ensure stars is always set
+    if (!b.stars) { b.stars = 3; changed = true; }
+  });
+  if (changed) save();
+}
+
+function ensureRequiredBubbles() {
+  let added = false;
+  LIFE_AREAS.forEach(label => {
+    const exists = Object.values(S.bubbles).some(b => b.label === label);
+    if (!exists) {
+      const stars = 3;
+      const angle = Math.random() * Math.PI * 2;
+      const id = 'b' + S.nextId++;
+      S.bubbles[id] = {
+        id, label, angle, stars,
+        status:'not-started', todos:[], notes:'', connections:[], lastInteracted:null
+      };
+      added = true;
+    }
+  });
+  if (added) save();
+}
+
+// ================================================================
+// COMPLETED PANEL
+// ================================================================
+
+function updateCompletedCount() {
+  const done = Object.values(S.bubbles).filter(b => b.status === 'done');
+  document.getElementById('completed-count').textContent = done.length ? `(${done.length})` : '';
+  document.getElementById('btn-completed').classList.toggle('active', done.length > 0);
+}
+
+function openCompleted() {
+  const panel = document.getElementById('completed-panel');
+  const grid  = document.getElementById('completed-grid');
+  grid.innerHTML = '';
+  const done = Object.values(S.bubbles).filter(b => b.status === 'done');
+  if (!done.length) {
+    grid.innerHTML = '<p class="completed-empty">Nothing completed yet — go make magic.</p>';
+  } else {
+    done.forEach(b => {
+      const card = document.createElement('div'); card.className = 'completed-card';
+      const tdDone = (b.todos||[]).filter(t=>t.done).length, tdTotal = (b.todos||[]).length;
+      const conns  = (b.connections||[]).map(cid=>S.bubbles[cid]?.label).filter(Boolean);
+      card.innerHTML = `<h3>${esc(b.label)}</h3><div class="cc-meta">${tdTotal?`${tdDone}/${tdTotal} tasks done`:'no tasks'}${conns.length?` · linked: ${conns.slice(0,3).map(esc).join(', ')}${conns.length>3?'…':''}`:''}</div>${b.notes?`<div class="cc-notes">"${esc(b.notes.slice(0,120))}${b.notes.length>120?'…':''}"</div>`:''}<button class="cc-restore" data-id="${b.id}">↩ Restore</button>`;
+      card.querySelector('.cc-restore').onclick = e => {
+        e.stopPropagation();
+        S.bubbles[b.id].status = 'in-progress';
+        save(); renderAll(); openCompleted(); toast(`${b.label} restored`);
+      };
+      grid.appendChild(card);
+    });
+  }
+  panel.classList.add('open');
 }
 
 // ================================================================
@@ -924,105 +1096,129 @@ function deleteBubble() {
 // ================================================================
 
 function initEvents() {
-  // Toolbar
-  document.getElementById('btn-connect').onclick=()=>{
-    UI.connectMode=!UI.connectMode; UI.connectingFrom=null;
+  document.getElementById('btn-connect').onclick = () => {
+    UI.connectMode = !UI.connectMode; UI.connectingFrom = null;
     document.getElementById('btn-connect').classList.toggle('active', UI.connectMode);
     renderBubbles();
-    if(UI.connectMode) toast('Connect mode: click two bubbles to link them');
+    if (UI.connectMode) toast('Connect mode — click two bubbles to link');
   };
 
-  document.getElementById('btn-add').onclick=()=>{
+  document.getElementById('btn-add').onclick = () => {
     document.getElementById('add-modal').classList.add('open');
-    document.getElementById('modal-inp').value='';
-    setTimeout(()=>document.getElementById('modal-inp').focus(),50);
+    document.getElementById('modal-inp').value = '';
+    setTimeout(() => document.getElementById('modal-inp').focus(), 50);
   };
 
-  // Panel
-  document.getElementById('panel-close').onclick=closePanel;
+  document.getElementById('panel-close').onclick = closePanel;
+  document.getElementById('btn-completed').onclick = openCompleted;
+  document.getElementById('completed-close').onclick = () => document.getElementById('completed-panel').classList.remove('open');
 
-  // Status
-  document.querySelectorAll('.s-btn').forEach(btn=>btn.onclick=()=>{
-    const id=UI.selected; if(!id) return;
-    S.bubbles[id].status=btn.dataset.s;
-    document.querySelectorAll('.s-btn').forEach(b=>b.classList.toggle('on',b===btn));
-    save(); refreshBubble(id);
+  // Status — color only, no ring change
+  document.querySelectorAll('.s-btn').forEach(btn => btn.onclick = () => {
+    const id = UI.selected; if (!id) return;
+    const b = S.bubbles[id];
+    const newStatus = btn.dataset.s;
+    b.status = newStatus; b.lastInteracted = Date.now();
+    document.querySelectorAll('.s-btn').forEach(b2 => b2.classList.toggle('on', b2 === btn));
+
+    if (newStatus === 'done') {
+      save(); closePanel(); renderAll();
+      toast(`✓ "${b.label}" completed!`);
+    } else {
+      const el = document.querySelector(`.bubble[data-id="${id}"]`);
+      if (el) el.dataset.status = newStatus;
+      save(); refreshBubble(id);
+      toast(newStatus.replace('-', ' '));
+    }
   });
 
-  // Stars
-  document.querySelectorAll('.star').forEach(btn=>btn.onclick=()=>{
-    const id=UI.selected; if(!id) return;
-    const n=parseInt(btn.dataset.n);
-    S.bubbles[id].stars=n;
-    document.querySelectorAll('.star').forEach((b,i)=>b.classList.toggle('on',i<n));
-    save(); refreshBubble(id);
+  // Stars — controls orbit ring
+  document.querySelectorAll('.star').forEach(btn => btn.onclick = () => {
+    const id = UI.selected; if (!id) return;
+    const n = parseInt(btn.dataset.n);
+    const b = S.bubbles[id];
+    b.stars = n; b.lastInteracted = Date.now();
+    document.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('on', i < n));
+    const el = document.querySelector(`.bubble[data-id="${id}"]`);
+    if (el) {
+      el.dataset.stars = n;
+      const sz = getBubbleSize(n);
+      el.style.width    = sz + 'px';
+      el.style.height   = sz + 'px';
+      el.style.fontSize = Math.max(11, Math.floor(sz * 0.107)) + 'px';
+    }
+    save();
+    toast(`Moved to ring ${n}★`);
   });
 
-  // Todo
-  const ti=document.getElementById('todo-inp');
-  const doAdd=()=>{
-    const id=UI.selected; if(!id) return;
-    const t=ti.value.trim(); if(!t) return;
-    if(!S.bubbles[id].todos) S.bubbles[id].todos=[];
-    S.bubbles[id].todos.push({text:t,done:false});
-    ti.value=''; save(); renderTodos(); refreshBubble(id);
+  // Todos
+  const ti = document.getElementById('todo-inp');
+  const doAdd = () => {
+    const id = UI.selected; if (!id) return;
+    const t = ti.value.trim(); if (!t) return;
+    if (!S.bubbles[id].todos) S.bubbles[id].todos = [];
+    S.bubbles[id].todos.push({ text:t, done:false });
+    S.bubbles[id].lastInteracted = Date.now();
+    ti.value = ''; save(); renderTodos(); refreshBubble(id);
   };
-  document.getElementById('todo-add').onclick=doAdd;
-  ti.addEventListener('keydown',e=>{ if(e.key==='Enter') doAdd(); });
+  document.getElementById('todo-add').onclick = doAdd;
+  ti.addEventListener('keydown', e => { if (e.key === 'Enter') doAdd(); });
 
   // Notes
   let ntimer;
-  document.getElementById('notes-ta').addEventListener('input',e=>{
+  document.getElementById('notes-ta').addEventListener('input', e => {
     clearTimeout(ntimer);
-    ntimer=setTimeout(()=>{
-      const id=UI.selected; if(!id) return;
-      S.bubbles[id].notes=e.target.value; save(); refreshBubble(id);
-    },400);
+    ntimer = setTimeout(() => {
+      const id = UI.selected; if (!id) return;
+      S.bubbles[id].notes = e.target.value;
+      S.bubbles[id].lastInteracted = Date.now();
+      save(); refreshBubble(id);
+    }, 400);
   });
 
-  // Delete bubble
-  document.getElementById('del-bubble').onclick=deleteBubble;
-
-  // Avatar
-  document.getElementById('avatar-node').onclick=()=>{
-    UI.avatarOpen=!UI.avatarOpen;
-    document.getElementById('avatar-panel').classList.toggle('open',UI.avatarOpen);
+  // Connect from panel
+  document.getElementById('conn-add-btn').onclick = () => {
+    const id = UI.selected; if (!id) return;
+    const sel = document.getElementById('conn-select');
+    const targetId = sel.value; if (!targetId) return;
+    const type = document.getElementById('conn-type').value || 'vibes';
+    const a = id, b = targetId;
+    const exists = S.connections.some(c => (c.from===a&&c.to===b)||(c.from===b&&c.to===a));
+    if (!exists) {
+      const cid = 'c' + Date.now();
+      S.connections.push({ id:cid, from:a, to:b, type });
+      if (!S.bubbles[a].connections) S.bubbles[a].connections = [];
+      if (!S.bubbles[b].connections) S.bubbles[b].connections = [];
+      S.bubbles[a].connections.push(b);
+      S.bubbles[b].connections.push(a);
+      toast('Connected!'); settleLayout();
+    }
+    sel.value = ''; renderPanelConns();
   };
-  document.getElementById('avatar-panel-close').onclick=()=>{
-    UI.avatarOpen=false;
+
+  document.getElementById('del-bubble').onclick = deleteBubble;
+
+  document.getElementById('avatar-node').onclick = () => {
+    UI.avatarOpen = !UI.avatarOpen;
+    document.getElementById('avatar-panel').classList.toggle('open', UI.avatarOpen);
+  };
+  document.getElementById('avatar-panel-close').onclick = () => {
+    UI.avatarOpen = false;
     document.getElementById('avatar-panel').classList.remove('open');
   };
 
-  // Modal
-  document.getElementById('modal-cancel').onclick=()=>document.getElementById('add-modal').classList.remove('open');
-  document.getElementById('modal-confirm').onclick=addBubble;
-  document.getElementById('modal-inp').addEventListener('keydown',e=>{
-    if(e.key==='Enter') addBubble();
-    if(e.key==='Escape') document.getElementById('add-modal').classList.remove('open');
+  document.getElementById('modal-cancel').onclick  = () => document.getElementById('add-modal').classList.remove('open');
+  document.getElementById('modal-confirm').onclick = addBubble;
+  document.getElementById('modal-inp').addEventListener('keydown', e => {
+    if (e.key === 'Enter')  addBubble();
+    if (e.key === 'Escape') document.getElementById('add-modal').classList.remove('open');
   });
 
-  // Canvas background click
-  document.getElementById('canvas').addEventListener('click',e=>{
-    if(e.target.id==='canvas'||e.target.id==='connections-svg') {
-      if(UI.connectMode&&UI.connectingFrom) { UI.connectingFrom=null; renderBubbles(); }
+  document.getElementById('canvas').addEventListener('click', e => {
+    if (e.target.id==='canvas'||e.target.id==='canvas-inner'||e.target.id==='connections-svg') {
+      if (UI.connectMode && UI.connectingFrom) { UI.connectingFrom = null; renderBubbles(); }
     }
   });
-}
-
-// ================================================================
-// UTILS
-// ================================================================
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-let _toastT;
-function toast(msg) {
-  const el=document.getElementById('toast');
-  el.textContent=msg; el.classList.add('show');
-  clearTimeout(_toastT);
-  _toastT=setTimeout(()=>el.classList.remove('show'), 2200);
 }
 
 // ================================================================
@@ -1030,22 +1226,36 @@ function toast(msg) {
 // ================================================================
 
 function positionAvatar() {
-  const node=document.getElementById('avatar-node');
-  node.style.left = (window.innerWidth/2)+'px';
-  node.style.top  = (48+(window.innerHeight-48)/2)+'px';
+  const { cx, cy } = getCenter();
+  const node = document.getElementById('avatar-node');
+  node.style.left = cx + 'px';
+  node.style.top  = cy + 'px';
 }
 
-window.addEventListener('load', ()=>{
+window.addEventListener('load', () => {
   const hadData = load();
   if (!hadData || !Object.keys(S.bubbles).length) {
     initBubbles(); save();
+  } else {
+    ensureRequiredBubbles();
   }
+
+  // Migrate old data: compute angles from x/y, ensure stars set
+  ensureAngles();
+
+  // Migrate hair color if still on old dark default
+  if (S.avatar.hair === '#3d2314') { S.avatar.hair = '#8b5e3c'; save(); }
+
   positionAvatar();
   initStarfield();
   drawAvatar();
   initAvatarPanel();
   renderAll();
   initEvents();
+  startAnimLoop();
+
+  const cv = document.getElementById('canvas');
+  cv.scrollLeft = 0; cv.scrollTop = 0;
 });
 </script>
 </body>

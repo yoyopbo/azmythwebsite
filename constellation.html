@@ -565,18 +565,28 @@ function renderRings() {
 
   for (let s = 1; s <= 5; s++) {
     const r = RING_RADII[s];
-    const alpha = 0.04 + (s - 1) * 0.012;
+    // brightness scales with importance: ring 5 (innermost) is brightest
+    const brightness = 0.12 + (s - 1) * 0.04; // 0.12 → 0.28
+
+    // Soft glow halo (wide, very faint)
+    const glow = document.createElementNS(ns, 'circle');
+    glow.setAttribute('cx', cx); glow.setAttribute('cy', cy); glow.setAttribute('r', r);
+    glow.setAttribute('fill', 'none');
+    glow.setAttribute('stroke', `rgba(201,162,39,${brightness * 0.35})`);
+    glow.setAttribute('stroke-width', '10');
+    g.appendChild(glow);
+
+    // Main ring line (solid, clearly visible)
     const circle = document.createElementNS(ns, 'circle');
     circle.setAttribute('cx', cx); circle.setAttribute('cy', cy); circle.setAttribute('r', r);
     circle.setAttribute('fill', 'none');
-    circle.setAttribute('stroke', `rgba(201,162,39,${alpha})`);
-    circle.setAttribute('stroke-width', '1');
-    circle.setAttribute('stroke-dasharray', '4 11');
+    circle.setAttribute('stroke', `rgba(201,162,39,${brightness})`);
+    circle.setAttribute('stroke-width', '1.5');
     g.appendChild(circle);
 
     const text = document.createElementNS(ns, 'text');
     text.setAttribute('x', cx);
-    text.setAttribute('y', cy - r - 8);
+    text.setAttribute('y', cy - r - 9);
     text.setAttribute('text-anchor', 'middle');
     text.setAttribute('class', 'ring-label');
     text.textContent = '★'.repeat(s) + ' · ' + RING_NAMES[s];

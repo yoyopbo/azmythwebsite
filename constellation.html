@@ -350,8 +350,8 @@ const OUTFIT_COLS = ['#5b3a8c','#2a5b8c','#2a8c5b','#8c2a5b','#8c5b2a','#1a3a1a'
 const RING_RADII = { 5:120, 4:195, 3:272, 2:350, 1:428 };
 const RING_NAMES = { 5:'essential', 4:'important', 3:'present', 2:'background', 1:'someday' };
 
-// Speed in rad/ms — alternating CW (+) and CCW (-), very slow drift
-const RING_SPEEDS = { 5:0.000070, 4:-0.000052, 3:0.000038, 2:-0.000027, 1:0.000018 };
+// Speed in rad/ms — alternating CW (+) and CCW (-), barely-there drift
+const RING_SPEEDS = { 5:0.000011, 4:-0.000008, 3:0.000006, 2:-0.000004, 1:0.000003 };
 
 // Snap thresholds: midpoints between adjacent rings
 const RING_SNAP = [
@@ -419,8 +419,10 @@ function getBubbleSize(stars) {
   const n = Math.max(1, Object.values(S.bubbles).filter(b =>
     b.status !== 'done' && (b.stars || 3) === s
   ).length);
+  if (n === 1) return 110;
   const chord = 2 * r * Math.sin(Math.PI / n);
-  return Math.max(82, Math.min(126, Math.floor(chord * 0.80)));
+  // No hard floor — let chord dictate size so bubbles always fit their ring
+  return Math.max(44, Math.min(110, Math.floor(chord * 0.82)));
 }
 
 function ageClass(b) {
@@ -740,17 +742,14 @@ function onBubbleMD(e) {
       b.angle = Math.atan2(dragY - cy2, dragX - cx2) - ringOffsets[newStars];
 
       if (newStars !== oldStars) {
-        toast(`★${'★'.repeat(newStars-1)} → ring ${newStars}`);
-        const sz = getBubbleSize(newStars);
-        el.style.width    = sz + 'px';
-        el.style.height   = sz + 'px';
-        el.style.fontSize = Math.max(11, Math.floor(sz * 0.107)) + 'px';
+        toast(`Ring ${newStars}★`);
         if (UI.selected === id) {
           document.querySelectorAll('.star').forEach((s,i) => s.classList.toggle('on', i < newStars));
         }
       }
 
       save();
+      settleLayout();
     } else {
       openPanel(id);
     }
@@ -938,7 +937,7 @@ function initStarfield() {
 }
 
 // ================================================================
-// SETTLE LAYOUT — angular repulsion per ring
+// SETTLE LAYOUT — guarantee no overlap on each ring
 // ================================================================
 
 function settleLayout() {
@@ -951,21 +950,32 @@ function settleLayout() {
     const rbs = rings[s];
     if (rbs.length <= 1) continue;
 
-    const r   = RING_RADII[s];
-    const sz  = getBubbleSize(s) + 10;
-    const minA = sz / r; // minimum angular separation
+    const r    = RING_RADII[s];
+    const sz   = getBubbleSize(s) + 8; // diameter + gap
+    const minA = sz / r;               // minimum safe angular gap
+    const step = (Math.PI * 2) / rbs.length; // equal-spacing step
 
-    for (let iter = 0; iter < 90; iter++) {
-      for (let i = 0; i < rbs.length; i++) {
-        for (let j = 0; j < rbs.length; j++) {
-          if (i === j) continue;
-          let da = rbs[j].angle - rbs[i].angle;
-          while (da >  Math.PI) da -= Math.PI*2;
-          while (da < -Math.PI) da += Math.PI*2;
-          if (da > 0 && da < minA) {
-            const push = (minA - da) * 0.09;
-            rbs[i].angle -= push;
-            rbs[j].angle += push;
+    // Sort by current angle to preserve rough relative positions
+    rbs.sort((a, b2) => a.angle - b2.angle);
+
+    if (step <= minA) {
+      // Ring is full — just space them evenly (no room for gaps)
+      const base = rbs[0].angle;
+      rbs.forEach((b, i) => { b.angle = base + step * i; });
+    } else {
+      // Room to breathe — repulsion to spread them out
+      for (let iter = 0; iter < 120; iter++) {
+        for (let i = 0; i < rbs.length; i++) {
+          for (let j = 0; j < rbs.length; j++) {
+            if (i === j) continue;
+            let da = rbs[j].angle - rbs[i].angle;
+            while (da >  Math.PI) da -= Math.PI * 2;
+            while (da < -Math.PI) da += Math.PI * 2;
+            if (da > 0 && da < minA) {
+              const push = (minA - da) * 0.14;
+              rbs[i].angle -= push;
+              rbs[j].angle += push;
+            }
           }
         }
       }
@@ -1132,23 +1142,16 @@ function initEvents() {
     }
   });
 
-  // Stars — controls orbit ring
+  // Stars — controls orbit ring; settle respaces both old and new ring
   document.querySelectorAll('.star').forEach(btn => btn.onclick = () => {
     const id = UI.selected; if (!id) return;
     const n = parseInt(btn.dataset.n);
     const b = S.bubbles[id];
     b.stars = n; b.lastInteracted = Date.now();
     document.querySelectorAll('.star').forEach((s, i) => s.classList.toggle('on', i < n));
-    const el = document.querySelector(`.bubble[data-id="${id}"]`);
-    if (el) {
-      el.dataset.stars = n;
-      const sz = getBubbleSize(n);
-      el.style.width    = sz + 'px';
-      el.style.height   = sz + 'px';
-      el.style.fontSize = Math.max(11, Math.floor(sz * 0.107)) + 'px';
-    }
     save();
-    toast(`Moved to ring ${n}★`);
+    settleLayout();
+    toast(`Ring ${n}★`);
   });
 
   // Todos
@@ -1250,7 +1253,7 @@ window.addEventListener('load', () => {
   initStarfield();
   drawAvatar();
   initAvatarPanel();
-  renderAll();
+  settleLayout(); // space out all rings before first render
   initEvents();
   startAnimLoop();
 

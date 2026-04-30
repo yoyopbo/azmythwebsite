@@ -347,18 +347,18 @@ const HAIR_COLORS = ['#18090a','#3d2314','#8b5e3c','#c8922a','#c84b2a','#2a4a8b'
 const OUTFIT_COLS = ['#5b3a8c','#2a5b8c','#2a8c5b','#8c2a5b','#8c5b2a','#1a3a1a','#3a1a1a','#1a1a3a'];
 
 // 5★ = innermost/most important, 1★ = outermost/background
-const RING_RADII = { 5:165, 4:310, 3:455, 2:600, 1:745 };
+const RING_RADII = { 5:120, 4:195, 3:272, 2:350, 1:428 };
 const RING_NAMES = { 5:'essential', 4:'important', 3:'present', 2:'background', 1:'someday' };
 
-// Speed in rad/ms — alternating CW (+) and CCW (-)
-const RING_SPEEDS = { 5:0.00055, 4:-0.00040, 3:0.00028, 2:-0.00018, 1:0.00012 };
+// Speed in rad/ms — alternating CW (+) and CCW (-), very slow drift
+const RING_SPEEDS = { 5:0.000070, 4:-0.000052, 3:0.000038, 2:-0.000027, 1:0.000018 };
 
 // Snap thresholds: midpoints between adjacent rings
 const RING_SNAP = [
-  { stars:5, max: (165 + 310) / 2 },
-  { stars:4, max: (310 + 455) / 2 },
-  { stars:3, max: (455 + 600) / 2 },
-  { stars:2, max: (600 + 745) / 2 },
+  { stars:5, max: (120 + 195) / 2 },
+  { stars:4, max: (195 + 272) / 2 },
+  { stars:3, max: (272 + 350) / 2 },
+  { stars:2, max: (350 + 428) / 2 },
   { stars:1, max: Infinity },
 ];
 

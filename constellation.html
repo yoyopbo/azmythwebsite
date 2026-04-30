@@ -194,41 +194,28 @@
     /* ── GOALS PLANET ── */
     #goals-planet-node {
       position:absolute; transform:translate(-50%,-50%); cursor:pointer; z-index:6;
-      width:170px; height:170px;
+      display:flex; flex-direction:column; align-items:center; gap:10px;
     }
-    .goals-planet-body {
-      width:170px; height:170px; border-radius:50%;
-      background:radial-gradient(circle at 33% 30%, #4a1282, #1a0440 55%, #0d0222);
-      border:2px solid rgba(180,100,255,0.5);
-      box-shadow:0 0 40px rgba(160,80,255,0.45), 0 0 90px rgba(130,50,220,0.2), 0 0 6px rgba(200,160,255,0.15) inset;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      gap:5px; animation:planet-pulse 5s ease-in-out infinite; position:relative; z-index:1;
+    #goals-planet-node:hover .goals-planet-canvas {
+      box-shadow:0 0 65px rgba(170,90,255,0.75), 0 0 120px rgba(140,60,230,0.35);
     }
-    @keyframes planet-pulse {
-      0%,100%{box-shadow:0 0 40px rgba(160,80,255,0.45),0 0 90px rgba(130,50,220,0.2)}
-      50%    {box-shadow:0 0 60px rgba(160,80,255,0.65),0 0 110px rgba(130,50,220,0.32)}
+    .goals-planet-wrap {
+      position:relative; width:200px; height:200px;
+    }
+    .goals-planet-canvas {
+      display:block; border-radius:50%; image-rendering:pixelated;
+      border:2px solid rgba(180,100,255,0.55);
+      box-shadow:0 0 50px rgba(160,80,255,0.5), 0 0 100px rgba(130,50,220,0.22);
+      transition:box-shadow 0.3s;
+    }
+    .goals-ring-svg {
+      position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+      pointer-events:none; z-index:-1; overflow:visible;
     }
     .goals-planet-label {
       font-family:'Cinzel',serif; font-size:1rem; font-weight:700;
-      letter-spacing:5px; color:rgba(230,195,255,0.96); pointer-events:none;
-    }
-    .goals-planet-sub {
-      font-family:'IM Fell English',serif; font-size:0.65rem; font-style:italic;
-      color:rgba(190,150,255,0.5); pointer-events:none; letter-spacing:1px;
-    }
-    /* Saturn-style ring using a pseudo-element on the body */
-    .goals-planet-body::before {
-      content:''; position:absolute; width:240px; height:52px; border-radius:50%;
-      border:3px solid rgba(160,80,255,0.28);
-      box-shadow:0 0 12px rgba(140,60,230,0.18);
-      top:50%; left:50%; transform:translate(-50%,-50%) rotateX(72deg);
-      pointer-events:none;
-    }
-    .goals-planet-body::after {
-      content:''; position:absolute; width:220px; height:44px; border-radius:50%;
-      border:1px solid rgba(200,150,255,0.12);
-      top:50%; left:50%; transform:translate(-50%,-50%) rotateX(72deg);
-      pointer-events:none;
+      letter-spacing:5px; color:rgba(230,195,255,0.92); pointer-events:none;
+      text-shadow:0 0 14px rgba(180,100,255,0.7);
     }
 
     /* ── BUBBLE GOAL GLOW ── */
@@ -299,6 +286,23 @@
       letter-spacing:1px; cursor:pointer; transition:all 0.2s; margin-top:0.25rem;
     }
     .goal-del-btn:hover { border-color:rgba(180,60,60,0.75); color:rgba(220,80,80,1); background:rgba(180,60,60,0.08); }
+
+    .goal-date-row { display:flex; align-items:center; gap:0.6rem; margin-bottom:0.8rem; }
+    .goal-date-lbl { font-family:'Cinzel',serif; font-size:0.58rem; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; white-space:nowrap; }
+    .goal-date-inp {
+      flex:1; background:rgba(160,80,255,0.06); border:1px solid rgba(160,80,255,0.22);
+      color:rgba(220,185,255,0.85); padding:4px 8px; border-radius:4px;
+      font-family:'IM Fell English',serif; font-size:0.8rem; outline:none; cursor:pointer;
+      color-scheme: dark;
+    }
+    .goal-date-inp:focus { border-color:rgba(160,80,255,0.55); }
+
+    /* planet hover — light up goal bubbles */
+    .bubble.goal-hover-lit {
+      opacity:1 !important; filter:none !important;
+      box-shadow:0 0 30px rgba(180,100,255,0.65), 0 0 60px rgba(160,80,255,0.25) !important;
+    }
+    .bubble.goal-hover-dim { opacity:0.08 !important; filter:grayscale(0.9) brightness(0.4) !important; }
 
     /* goal select in bubble panel */
     .goal-assign-tags { display:flex; flex-wrap:wrap; gap:0.35rem; margin-bottom:0.5rem; }
@@ -1044,15 +1048,112 @@ function renderPanelConns() {
 // ================================================================
 
 function initGoalsPlanet() {
+  const SIZE = 200;
+  const PIXEL = 7; // px per "pixel art" block
+
+  // Build node structure
   const node = document.createElement('div');
   node.id = 'goals-planet-node';
-  node.innerHTML = `
-    <div class="goals-planet-body">
-      <span class="goals-planet-label">GOALS</span>
-      <span class="goals-planet-sub">open</span>
-    </div>`;
+
+  // Wrap holds canvas + SVG ring
+  const wrap = document.createElement('div');
+  wrap.className = 'goals-planet-wrap';
+
+  // Canvas for spinning pixel texture
+  const canvas = document.createElement('canvas');
+  canvas.width = SIZE; canvas.height = SIZE;
+  canvas.className = 'goals-planet-canvas';
+  wrap.appendChild(canvas);
+
+  // SVG Saturn ring (drawn behind planet via z-index:-1)
+  const ns = 'http://www.w3.org/2000/svg';
+  const ringW = SIZE + 90, ringH = SIZE;
+  const svg = document.createElementNS(ns, 'svg');
+  svg.setAttribute('width', ringW); svg.setAttribute('height', ringH);
+  svg.setAttribute('class', 'goals-ring-svg');
+  const makeEllipse = (rx, ry, stroke, sw) => {
+    const el = document.createElementNS(ns, 'ellipse');
+    el.setAttribute('cx', ringW/2); el.setAttribute('cy', ringH/2);
+    el.setAttribute('rx', rx);     el.setAttribute('ry', ry);
+    el.setAttribute('fill', 'none');
+    el.setAttribute('stroke', stroke); el.setAttribute('stroke-width', sw);
+    svg.appendChild(el);
+  };
+  makeEllipse(ringW/2 - 2, 26, 'rgba(180,100,255,0.32)', '4');
+  makeEllipse(ringW/2 - 14, 20, 'rgba(210,160,255,0.14)', '2');
+  wrap.appendChild(svg);
+
+  // Label below
+  const label = document.createElement('div');
+  label.className = 'goals-planet-label';
+  label.textContent = 'GOALS';
+
+  node.appendChild(wrap);
+  node.appendChild(label);
   node.addEventListener('click', openGoalsPanel);
+  node.addEventListener('mouseenter', showGoalHoverLines);
+  node.addEventListener('mouseleave', clearGoalHoverLines);
   document.getElementById('canvas-inner').appendChild(node);
+
+  // ── Pixel art texture ──────────────────────────────────────────
+  const ctx = canvas.getContext('2d');
+  const COLS = Math.ceil(SIZE / PIXEL) + 2;
+  const ROWS = Math.ceil(SIZE / PIXEL);
+  const TEX_W = COLS * 2; // double-wide for seamless scroll loop
+
+  // Purple-hued palette: dark bands + lighter accent bands
+  const PAL = [
+    [18, 4, 45],   [38, 10, 88],  [60, 18, 130], [80, 32, 165],
+    [45, 12, 100], [25, 6, 62],   [70, 25, 148], [15, 3, 38],
+    [90, 44, 185], [30, 8, 72],
+  ];
+
+  // Build texture grid (horizontal bands with slight pixel noise)
+  const tex = [];
+  for (let r = 0; r < ROWS; r++) {
+    tex[r] = [];
+    const bandPct = r / ROWS; // 0→1 top to bottom
+    // Create 5 visible bands by mapping rows
+    const bandIdx = Math.floor(bandPct * 5);
+    const palBase = bandIdx * 2;
+    for (let c = 0; c < TEX_W; c++) {
+      const noise = Math.sin(r * 2.1 + c * 0.9) > 0.38 ? 1 : 0;
+      tex[r][c] = PAL[(palBase + noise) % PAL.length];
+    }
+  }
+
+  let offset = 0;
+  function drawPlanet() {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(SIZE/2, SIZE/2, SIZE/2 - 1, 0, Math.PI*2);
+    ctx.clip();
+
+    const shift = Math.floor(offset) % COLS;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const srcC = (c + shift + TEX_W) % TEX_W;
+        const [rv, g, b] = tex[r][srcC];
+        ctx.fillStyle = `rgb(${rv},${g},${b})`;
+        ctx.fillRect(c * PIXEL, r * PIXEL, PIXEL, PIXEL);
+      }
+    }
+
+    // Lighting: bright highlight top-left, dark vignette on edge
+    const light = ctx.createRadialGradient(SIZE*.32, SIZE*.28, SIZE*.04, SIZE/2, SIZE/2, SIZE/2);
+    light.addColorStop(0,   'rgba(215,175,255,0.22)');
+    light.addColorStop(0.45,'rgba(0,0,0,0)');
+    light.addColorStop(1,   'rgba(0,0,18,0.6)');
+    ctx.fillStyle = light;
+    ctx.beginPath(); ctx.arc(SIZE/2, SIZE/2, SIZE/2, 0, Math.PI*2); ctx.fill();
+
+    ctx.restore();
+    offset += 0.07; // spin speed (adjust for faster/slower)
+    requestAnimationFrame(drawPlanet);
+  }
+  drawPlanet();
+
   positionGoalsPlanet();
 }
 
@@ -1060,15 +1161,55 @@ function positionGoalsPlanet() {
   const node = document.getElementById('goals-planet-node');
   if (!node) return;
   const { cx, cy } = getCenter();
-  // Place to the right, just past the outermost ring (1★ = 428px), always in view
-  const outerR = 428;
-  node.style.left = (cx + outerR + 175) + 'px';
-  node.style.top  = cy + 'px';
+  // Upper-left, just outside the outermost ring (428px) at ~135° angle
+  node.style.left = Math.round(cx - 430) + 'px';
+  node.style.top  = Math.round(cy - 400) + 'px';
 }
 
 // ================================================================
 // GOALS PANEL
 // ================================================================
+
+function showGoalHoverLines() {
+  const { cx, cy } = getCenter();
+  const px = cx - 430, py = cy - 400; // planet canvas-inner coords
+
+  const goalIds = new Set();
+  (S.goals || []).forEach(g => (g.bubbleIds || []).forEach(id => goalIds.add(id)));
+  if (!goalIds.size) return;
+
+  document.querySelectorAll('.bubble').forEach(el => {
+    if (goalIds.has(el.dataset.id)) el.classList.add('goal-hover-lit');
+    else el.classList.add('goal-hover-dim');
+  });
+
+  const ns = 'http://www.w3.org/2000/svg';
+  const hg = document.getElementById('hover-lines');
+  Array.from(goalIds).forEach((bid, i) => {
+    const b = S.bubbles[bid]; if (!b || b.status === 'done') return;
+    const { x, y } = getVisualPos(b, cx, cy);
+    const path = document.createElementNS(ns, 'path');
+    path.setAttribute('d', bezierPts(px, py, x, y));
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', 'rgba(190,120,255,0.75)');
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('stroke-dasharray', '2000');
+    path.setAttribute('stroke-dashoffset', '2000');
+    path.style.filter = 'drop-shadow(0 0 5px rgba(170,90,255,0.55))';
+    hg.appendChild(path);
+    setTimeout(() => {
+      path.style.transition = 'stroke-dashoffset 0.6s cubic-bezier(0.4,0,0.2,1)';
+      path.style.strokeDashoffset = '0';
+    }, i * 55);
+  });
+}
+
+function clearGoalHoverLines() {
+  document.getElementById('hover-lines').innerHTML = '';
+  document.querySelectorAll('.bubble').forEach(el => {
+    el.classList.remove('goal-hover-lit', 'goal-hover-dim');
+  });
+}
 
 function openGoalsPanel() {
   if (!S.goals) S.goals = [];
@@ -1105,6 +1246,15 @@ function buildGoalCard(g) {
     titleTimer = setTimeout(() => { g.title = titleInp.value; save(); }, 350);
   });
   card.appendChild(titleInp);
+
+  // Due date
+  const dateRow = document.createElement('div'); dateRow.className = 'goal-date-row';
+  const dateLbl = document.createElement('span'); dateLbl.className = 'goal-date-lbl'; dateLbl.textContent = 'Complete by';
+  const dateInp = document.createElement('input'); dateInp.type = 'date'; dateInp.className = 'goal-date-inp';
+  dateInp.value = g.dueDate || '';
+  dateInp.addEventListener('change', () => { g.dueDate = dateInp.value; save(); });
+  dateRow.appendChild(dateLbl); dateRow.appendChild(dateInp);
+  card.appendChild(dateRow);
 
   // Notes
   const notesTa = document.createElement('textarea');

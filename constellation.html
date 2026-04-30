@@ -950,36 +950,12 @@ function settleLayout() {
     const rbs = rings[s];
     if (rbs.length <= 1) continue;
 
-    const r    = RING_RADII[s];
-    const sz   = getBubbleSize(s) + 8; // diameter + gap
-    const minA = sz / r;               // minimum safe angular gap
-    const step = (Math.PI * 2) / rbs.length; // equal-spacing step
+    const step = (Math.PI * 2) / rbs.length;
 
-    // Sort by current angle to preserve rough relative positions
+    // Sort by current angle then distribute evenly around the ring
     rbs.sort((a, b2) => a.angle - b2.angle);
-
-    if (step <= minA) {
-      // Ring is full — just space them evenly (no room for gaps)
-      const base = rbs[0].angle;
-      rbs.forEach((b, i) => { b.angle = base + step * i; });
-    } else {
-      // Room to breathe — repulsion to spread them out
-      for (let iter = 0; iter < 120; iter++) {
-        for (let i = 0; i < rbs.length; i++) {
-          for (let j = 0; j < rbs.length; j++) {
-            if (i === j) continue;
-            let da = rbs[j].angle - rbs[i].angle;
-            while (da >  Math.PI) da -= Math.PI * 2;
-            while (da < -Math.PI) da += Math.PI * 2;
-            if (da > 0 && da < minA) {
-              const push = (minA - da) * 0.14;
-              rbs[i].angle -= push;
-              rbs[j].angle += push;
-            }
-          }
-        }
-      }
-    }
+    const base = rbs[0].angle;
+    rbs.forEach((b, i) => { b.angle = base + step * i; });
   }
 
   save(); renderAll();

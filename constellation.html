@@ -1161,9 +1161,9 @@ function positionGoalsPlanet() {
   const node = document.getElementById('goals-planet-node');
   if (!node) return;
   const { cx, cy } = getCenter();
-  // Upper-left, just outside the outermost ring (428px) at ~135° angle
-  node.style.left = Math.round(cx - 430) + 'px';
-  node.style.top  = Math.round(cy - 400) + 'px';
+  // Upper-left, close to the outer rings and within viewport
+  node.style.left = Math.round(cx - 490) + 'px';
+  node.style.top  = Math.round(cy - 270) + 'px';
 }
 
 // ================================================================

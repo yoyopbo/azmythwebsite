@@ -7,30 +7,79 @@
   <title>Azmyth</title>
   <link rel="stylesheet" href="styles.css?v=12">
   <style>
-    /* Plain large portrait — no frame, no glow */
-    .portrait-container::before,
-    .portrait-container::after { display: none; }
+    /* Kill all decorative overlays */
+    .magical-bg,
+    .magical-bg::before,
+    .magical-bg::after,
+    .simple-frame,
+    body::before,
+    body::after { display: none !important; }
 
-    .portrait-frame {
-      width: 420px;
-      height: 560px;
-      padding: 0;
-      background: none;
-      box-shadow: none;
+    body { background: #000; }
+
+    /* Thinner nav */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      padding-top: 0.4rem;
+      padding-bottom: 0.4rem;
     }
 
-    .portrait-frame::before,
-    .portrait-frame::after { display: none; }
-
-    .portrait-placeholder {
-      background: none;
-      border: none;
+    /* Full-bleed scrollable portrait */
+    .hero {
+      position: relative;
+      min-height: 200vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 38vh;
     }
 
-    .portrait-placeholder img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('portrait.png') center 35% / cover no-repeat;
+      z-index: 0;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 1;
+    }
+
+    .portrait-container { display: none; }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0;
+    }
+
+    .hero-text {
+      text-align: center;
+      margin-top: -4rem;
+    }
+
+    .nav-links a { color: rgba(255,255,255,0.9) !important; }
+
+    .hero-text .subtitle {
+      font-size: 0.85rem;
+      text-shadow: none;
+      background: rgba(0,0,0,0.55);
+      box-shadow: 0 0 25px 18px rgba(0,0,0,0.55);
+      border-radius: 2px;
     }
   </style>
   <!-- Fantasy Fonts from Google -->
@@ -40,12 +89,10 @@
 </head>
 <body>
   <div class="magical-bg"></div>
-
-  <!-- Simple Border Frame -->
   <div class="simple-frame"></div>
 
   <nav>
-    <a href="index.html" class="logo"></a>
+    <a href="index.html" class="logo">Azmyth</a>
     <div class="nav-links">
       <a href="about.html">Who I Am</a>
       <a href="hire.html">Work With Me</a>
@@ -67,7 +114,6 @@
       <div class="hero-text">
         <h1><span class="big-initial">A</span>zMYTH</h1>
         <p class="subtitle">Artist <span class="subtitle-star">✦</span> Social Architect <span class="subtitle-star">✦</span> Systems Wizard</p>
-        <p class="intro">step into my world of connection, unexpected delight, confusion and so much more...</p>
         <div class="cta-buttons">
           <a href="about.html" class="btn primary">wait what? who are you?</a>
         </div>

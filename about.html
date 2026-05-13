@@ -56,11 +56,19 @@
       line-height: 1;
     }
 
-    /* ── Bio section below image ── */
-    .about-body {
-      max-width: 780px;
+    /* ── Bio + orb layout ── */
+    .about-layout {
+      display: flex;
+      align-items: flex-start;
+      max-width: 1100px;
       margin: 0 auto;
       padding: 4rem 2rem 6rem;
+      gap: 3rem;
+    }
+
+    .about-body {
+      flex: 1;
+      min-width: 0;
     }
 
     .about-body .bio-intro {
@@ -75,6 +83,29 @@
       color: var(--silver, #b8b8c8);
       line-height: 1.85;
       margin-bottom: 1.5rem;
+    }
+
+    .about-orb {
+      flex-shrink: 0;
+      width: 220px;
+      display: flex;
+      justify-content: center;
+      padding-top: 1rem;
+      position: sticky;
+      top: 120px;
+    }
+
+    /* gentler drift for sidebar placement */
+    .about-orb .elven-window {
+      animation: orbDrift 20s ease-in-out infinite;
+    }
+
+    @keyframes orbDrift {
+      0%   { transform: translate(0, 0) rotate(0deg); }
+      25%  { transform: translate(10px, -14px) rotate(1.5deg); }
+      50%  { transform: translate(-8px, 10px) rotate(-1deg); }
+      75%  { transform: translate(12px, 6px) rotate(2deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
     }
   </style>
 </head>
@@ -103,40 +134,42 @@
       </div>
     </div>
 
-    <div class="about-body">
-      <p class="bio-intro">
-        I'm a multidisciplinary artist, performer, and maker whose work lives at the intersection of the visceral and the beautiful. Based in the Bay Area, I move fluidly between Butoh dance, sewing, painting, fire spinning, event production, and interior design — a creative practice that treats the body, the room, and the people in it as a single instrument to play.
-      </p>
-      <p>
-        I was raised in rural Idaho in a strict Christian household, broke out at twenty-two, and haven't stopped becoming since. In the Bay Area I've found myself shaped by two very different worlds: rationalists and intellectuals who have sharpened how I think, and those who live closer to spirit, body, and feeling. I'm a creature of both — carrying the best of each without apology.
-      </p>
-      <p>
-        My performance work is rooted in transformation and creature-logic. As an emerging Butoh practitioner, I draw on deep somatic presence and a commitment to the strange — finding the humanity in the feral. That same sensibility runs through MystiCloak, my line of upcycled wizard cloaks, and my fashion consultation work, both of which start from the same premise: that how we dress is how we inhabit ourselves. Aesthetics have always been essential to me — I dress to feel magical, and have since I was young. This attunement to beauty isn't decorative; it's how I understand and move through the world.
-      </p>
-      <p>
-        That thread runs through everything I've built: interior design, men's fashion consulting, personal assistance, and — perhaps my longest-running role — professional charismat. A natural extrovert, I have a genuine love for people, strangers included, and a way of making spaces feel worth inhabiting.
-      </p>
-      <p>
-        When I'm not in the middle of a creative project, I'm behind a sewing machine, deep in floor choreography, moving through fusion dance, curating elaborate playlists, at yoga, or doing socially unnecessary impressions.
-      </p>
-    </div>
+    <div class="about-layout">
+      <div class="about-body">
+        <p class="bio-intro">
+          I'm a multidisciplinary artist, performer, and maker whose work lives at the intersection of the visceral and the beautiful. Based in the Bay Area, I move fluidly between Butoh dance, sewing, painting, fire spinning, event production, and interior design — a creative practice that treats the body, the room, and the people in it as a single instrument to play.
+        </p>
+        <p>
+          I was raised in rural Idaho in a strict Christian household, broke out at twenty-two, and haven't stopped becoming since. In the Bay Area I've found myself shaped by two very different worlds: rationalists and intellectuals who have sharpened how I think, and those who live closer to spirit, body, and feeling. I'm a creature of both — carrying the best of each without apology.
+        </p>
+        <p>
+          My performance work is rooted in transformation and creature-logic. As an emerging Butoh practitioner, I draw on deep somatic presence and a commitment to the strange — finding the humanity in the feral. That same sensibility runs through MystiCloak, my line of upcycled wizard cloaks, and my fashion consultation work, both of which start from the same premise: that how we dress is how we inhabit ourselves. Aesthetics have always been essential to me — I dress to feel magical, and have since I was young. This attunement to beauty isn't decorative; it's how I understand and move through the world.
+        </p>
+        <p>
+          That thread runs through everything I've built: interior design, men's fashion consulting, personal assistance, and — perhaps my longest-running role — professional charismat. A natural extrovert, I have a genuine love for people, strangers included, and a way of making spaces feel worth inhabiting.
+        </p>
+        <p>
+          When I'm not in the middle of a creative project, I'm behind a sewing machine, deep in floor choreography, moving through fusion dance, curating elaborate playlists, at yoga, or doing socially unnecessary impressions.
+        </p>
+      </div>
 
-    <section class="elven-window-section">
-      <div class="elven-window" id="elven-window">
-        <div class="window-frame">
-          <div class="window-wood"></div>
-          <div class="window-vine top-left">❧</div>
-          <div class="window-vine top-right">❧</div>
-          <div class="window-vine bottom-left">❧</div>
-          <div class="window-vine bottom-right">❧</div>
-          <div class="window-glass">
-            <video id="window-video" loop muted playsinline autoplay>
-              <source src="about-video.mp4" type="video/mp4">
-            </video>
+      <div class="about-orb">
+        <div class="elven-window" id="elven-window">
+          <div class="window-frame">
+            <div class="window-wood"></div>
+            <div class="window-vine top-left">❧</div>
+            <div class="window-vine top-right">❧</div>
+            <div class="window-vine bottom-left">❧</div>
+            <div class="window-vine bottom-right">❧</div>
+            <div class="window-glass">
+              <video id="window-video" loop muted playsinline autoplay>
+                <source src="about-video.mp4" type="video/mp4">
+              </video>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
 
   </main>
 

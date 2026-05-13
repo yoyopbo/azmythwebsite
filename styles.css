@@ -1034,7 +1034,7 @@ nav::before {
    */
   font-family: 'Sveva', 'Cinzel', serif;
   font-size: 4.5rem;
-  font-weight: 300;
+  font-weight: 700;
   color: var(--gold);
   margin-bottom: 0.5rem;
   text-shadow:
@@ -1049,6 +1049,12 @@ nav::before {
 .hero-text h1::before,
 .hero-text h1::after {
   display: none;
+}
+
+.big-initial {
+  font-size: 1.3em;
+  line-height: 1;
+  vertical-align: middle;
 }
 
 .subtitle {

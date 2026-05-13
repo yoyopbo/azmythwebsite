@@ -8,21 +8,9 @@
   <link rel="stylesheet" href="styles.css?v=12">
   <link rel="stylesheet" href="pages.css?v=12">
   <style>
-    /* hide left ornament only */
+    /* hide both side ornaments on this page */
     .page-content::before,
     .page-content::after { display: none; }
-
-    .about-ornament {
-      position: fixed;
-      right: -28px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 200px;
-      height: 390px;
-      pointer-events: none;
-      z-index: 5;
-      opacity: 0.88;
-    }
 
     .page-content {
       padding: 0;
@@ -133,6 +121,23 @@
       </p>
     </div>
 
+    <section class="elven-window-section">
+      <div class="elven-window" id="elven-window">
+        <div class="window-frame">
+          <div class="window-wood"></div>
+          <div class="window-vine top-left">❧</div>
+          <div class="window-vine top-right">❧</div>
+          <div class="window-vine bottom-left">❧</div>
+          <div class="window-vine bottom-right">❧</div>
+          <div class="window-glass">
+            <video id="window-video" loop muted playsinline autoplay>
+              <source src="about-video.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <footer>
@@ -156,8 +161,6 @@
     <p>&copy; 2026 Azmyth &middot; <a href="https://mysticloak.com" target="_blank">mysticloak.com</a></p>
     <p class="footer-quote">I gather what hurts, I bless it with holy nonsense</p>
   </footer>
-
-  <img class="about-ornament" src="images/ornament.svg" alt="">
 
   </body>
 </html>

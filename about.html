@@ -5,108 +5,76 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Who I Am | Azmyth</title>
-  <link rel="stylesheet" href="styles.css?v=11">
-  <link rel="stylesheet" href="pages.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="pages.css?v=12">
   <style>
-    .fun-facts-section {
-      max-width: 900px;
-      margin: 4rem auto 2rem;
-      padding: 0 2rem;
-      text-align: center;
-    }
-    .fun-facts-section h2 {
-      font-size: 1.6rem;
-      color: #c9a227;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 0.4rem;
-    }
-    .fun-facts-section .fun-facts-label {
-      color: #a8a4b8;
-      font-style: italic;
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
-    }
-    .ticker-wrapper {
-      border-top: 1px solid rgba(201, 162, 39, 0.3);
-      border-bottom: 1px solid rgba(201, 162, 39, 0.3);
-      padding: 1.25rem 0;
-      overflow: hidden;
-      position: relative;
-      background: linear-gradient(135deg, rgba(45, 27, 61, 0.3), rgba(15, 39, 68, 0.3));
-    }
-    .ticker-wrapper::before,
-    .ticker-wrapper::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 80px;
-      z-index: 2;
-      pointer-events: none;
-    }
-    .ticker-wrapper::before {
-      left: 0;
-      background: linear-gradient(to right, var(--void), transparent);
-    }
-    .ticker-wrapper::after {
-      right: 0;
-      background: linear-gradient(to left, var(--void), transparent);
-    }
-    .ticker-track {
-      display: flex;
-      width: max-content;
-      animation: scroll-left 70s linear infinite;
-    }
-    .ticker-track:hover {
-      animation-play-state: paused;
-    }
-    @keyframes scroll-left {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .ticker-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 1.5rem;
-      padding: 0 2rem;
-      white-space: nowrap;
-      color: #e8e4dc;
-      font-size: 0.9rem;
-      font-style: italic;
-    }
-    .ticker-item .sep {
-      color: #c9a227;
-      font-size: 0.7rem;
-    }
-    .ticker-item strong {
-      color: #c9a227;
-      font-style: normal;
-      font-size: 0.7rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      font-weight: normal;
-    }
-    /* hide the generated right-side astrolabe on this page */
+    /* hide both side ornaments on this page */
+    .page-content::before,
     .page-content::after { display: none; }
 
-    /* push all content left so it never slides under the graphic */
-    .page-content { padding-right: 32vh; }
-
-    .about-accent {
-      position: fixed;
-      right: 0;
-      top: 0;
-      height: 100vh;
-      width: auto;
-      z-index: 5;
-      pointer-events: none;
+    .page-content {
+      padding: 0;
+      max-width: 100%;
     }
-    .about-accent img {
+
+    /* ── Hero image with title overlay ── */
+    .about-hero {
+      position: relative;
+      width: 100%;
+      max-height: 90vh;
+      overflow: hidden;
+    }
+
+    .about-hero img {
+      width: 100%;
+      max-height: 90vh;
+      object-fit: cover;
+      object-position: center top;
       display: block;
-      height: 100%;
-      width: auto;
-      opacity: 0.88;
+    }
+
+    .about-hero-title {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.35));
+    }
+
+    .about-hero-title h1 {
+      font-family: 'Sveva', 'Cinzel', serif;
+      font-weight: 700;
+      font-size: 7rem;
+      letter-spacing: 12px;
+      color: #fff;
+      text-shadow:
+        0 0 60px rgba(201,162,39,0.7),
+        0 0 120px rgba(201,162,39,0.4),
+        0 4px 8px rgba(0,0,0,0.6);
+      margin: 0;
+      line-height: 1;
+    }
+
+    /* ── Bio section below image ── */
+    .about-body {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 4rem 2rem 6rem;
+    }
+
+    .about-body .bio-intro {
+      font-size: 1.15rem;
+      color: var(--gold-light, #d4b54a);
+      line-height: 1.85;
+      margin-bottom: 2rem;
+      font-style: italic;
+    }
+
+    .about-body p {
+      color: var(--silver, #b8b8c8);
+      line-height: 1.85;
+      margin-bottom: 1.5rem;
     }
   </style>
 </head>
@@ -127,51 +95,32 @@
   </nav>
 
   <main class="page-content">
-    <header class="page-header">
-      <h1>I Am</h1>
-    </header>
 
-    <div class="arc-divider"></div>
-
-    <section class="about-section">
-      <div class="about-text">
-        <p class="bio-intro">
-          I'm a multidisciplinary artist, performer, and maker whose work lives at the intersection of the visceral and the beautiful. Based in the Bay Area, I move fluidly between Butoh dance, sewing, painting, fire spinning, event production, and interior design — a creative practice that treats the body, the room, and the people in it as a single instrument to play.
-        </p>
-        <p>
-          I was raised in rural Idaho in a strict Christian household, broke out at twenty-two, and haven't stopped becoming since. In the Bay Area I've found myself shaped by two very different worlds: rationalists and intellectuals who have sharpened how I think, and those who live closer to spirit, body, and feeling. I'm a creature of both — carrying the best of each without apology.
-        </p>
-        <p>
-          My performance work is rooted in transformation and creature-logic. As an emerging Butoh practitioner, I draw on deep somatic presence and a commitment to the strange — finding the humanity in the feral. That same sensibility runs through MystiCloak, my line of upcycled wizard cloaks, and my fashion consultation work, both of which start from the same premise: that how we dress is how we inhabit ourselves. Aesthetics have always been essential to me — I dress to feel magical, and have since I was young. This attunement to beauty isn't decorative; it's how I understand and move through the world.
-        </p>
-        <p>
-          That thread runs through everything I've built: interior design, men's fashion consulting, personal assistance, and — perhaps my longest-running role — professional charismat. A natural extrovert, I have a genuine love for people, strangers included, and a way of making spaces feel worth inhabiting.
-        </p>
-        <p>
-          When I'm not in the middle of a creative project, I'm behind a sewing machine, deep in floor choreography, moving through fusion dance, curating elaborate playlists, at yoga, or doing socially unnecessary impressions.
-        </p>
+    <div class="about-hero">
+      <img src="images/about-hero.jpg" alt="Azmyth">
+      <div class="about-hero-title">
+        <h1>I AM</h1>
       </div>
+    </div>
 
-    </section>
+    <div class="about-body">
+      <p class="bio-intro">
+        I'm a multidisciplinary artist, performer, and maker whose work lives at the intersection of the visceral and the beautiful. Based in the Bay Area, I move fluidly between Butoh dance, sewing, painting, fire spinning, event production, and interior design — a creative practice that treats the body, the room, and the people in it as a single instrument to play.
+      </p>
+      <p>
+        I was raised in rural Idaho in a strict Christian household, broke out at twenty-two, and haven't stopped becoming since. In the Bay Area I've found myself shaped by two very different worlds: rationalists and intellectuals who have sharpened how I think, and those who live closer to spirit, body, and feeling. I'm a creature of both — carrying the best of each without apology.
+      </p>
+      <p>
+        My performance work is rooted in transformation and creature-logic. As an emerging Butoh practitioner, I draw on deep somatic presence and a commitment to the strange — finding the humanity in the feral. That same sensibility runs through MystiCloak, my line of upcycled wizard cloaks, and my fashion consultation work, both of which start from the same premise: that how we dress is how we inhabit ourselves. Aesthetics have always been essential to me — I dress to feel magical, and have since I was young. This attunement to beauty isn't decorative; it's how I understand and move through the world.
+      </p>
+      <p>
+        That thread runs through everything I've built: interior design, men's fashion consulting, personal assistance, and — perhaps my longest-running role — professional charismat. A natural extrovert, I have a genuine love for people, strangers included, and a way of making spaces feel worth inhabiting.
+      </p>
+      <p>
+        When I'm not in the middle of a creative project, I'm behind a sewing machine, deep in floor choreography, moving through fusion dance, curating elaborate playlists, at yoga, or doing socially unnecessary impressions.
+      </p>
+    </div>
 
-
-    <!-- Elven Window Video -->
-    <section class="elven-window-section">
-      <div class="elven-window" id="elven-window">
-        <div class="window-frame">
-          <div class="window-wood"></div>
-          <div class="window-vine top-left">❧</div>
-          <div class="window-vine top-right">❧</div>
-          <div class="window-vine bottom-left">❧</div>
-          <div class="window-vine bottom-right">❧</div>
-          <div class="window-glass">
-            <video id="window-video" loop muted playsinline autoplay>
-              <source src="about-video.mp4" type="video/mp4">
-            </video>
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer>
@@ -195,10 +144,6 @@
     <p>&copy; 2026 Azmyth &middot; <a href="https://mysticloak.com" target="_blank">mysticloak.com</a></p>
     <p class="footer-quote">I gather what hurts, I bless it with holy nonsense</p>
   </footer>
-
-  <div class="about-accent">
-    <img src="images/fantasy-line-transparent.png" alt="">
-  </div>
 
   </body>
 </html>

@@ -6,6 +6,33 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Azmyth</title>
   <link rel="stylesheet" href="styles.css?v=12">
+  <style>
+    /* Plain large portrait — no frame, no glow */
+    .portrait-container::before,
+    .portrait-container::after { display: none; }
+
+    .portrait-frame {
+      width: 420px;
+      height: 560px;
+      padding: 0;
+      background: none;
+      box-shadow: none;
+    }
+
+    .portrait-frame::before,
+    .portrait-frame::after { display: none; }
+
+    .portrait-placeholder {
+      background: none;
+      border: none;
+    }
+
+    .portrait-placeholder img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
   <!-- Fantasy Fonts from Google -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

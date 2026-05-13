@@ -8,9 +8,21 @@
   <link rel="stylesheet" href="styles.css?v=12">
   <link rel="stylesheet" href="pages.css?v=12">
   <style>
-    /* hide both side ornaments on this page */
+    /* hide left ornament only */
     .page-content::before,
     .page-content::after { display: none; }
+
+    .about-ornament {
+      position: fixed;
+      right: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 200px;
+      height: 390px;
+      pointer-events: none;
+      z-index: 5;
+      opacity: 0.88;
+    }
 
     .page-content {
       padding: 0;
@@ -144,6 +156,8 @@
     <p>&copy; 2026 Azmyth &middot; <a href="https://mysticloak.com" target="_blank">mysticloak.com</a></p>
     <p class="footer-quote">I gather what hurts, I bless it with holy nonsense</p>
   </footer>
+
+  <img class="about-ornament" src="images/ornament.svg" alt="">
 
   </body>
 </html>

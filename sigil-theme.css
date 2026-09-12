@@ -1,0 +1,94 @@
+/* ── Sigil theme ─────────────────────────────────────────────
+   Shared look from the "I Am" page redesign:
+   parchment-page texture, shadowed-paper header band,
+   glowing page titles, hand-drawn sigil rails + title sigils.
+   Load AFTER styles.css and pages.css. */
+
+/* hide the old astrolabe side ornaments */
+.page-content::before,
+.page-content::after { display: none; }
+
+/* ── Heavier parchment-page texture ── */
+.magical-bg {
+  background:
+    /* strong surface grain */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.22'/%3E%3C/svg%3E"),
+    /* coarse mottling — uneven pulp blotches */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.45  0 0 0 0 0.36  0 0 0 0 0.2  0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)' opacity='0.16'/%3E%3C/svg%3E"),
+    /* horizontal laid-paper fiber lines */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='500' height='500'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.02%200.4' numOctaves='5' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)' opacity='0.09'/%3E%3C/svg%3E"),
+    /* age spots / foxing */
+    radial-gradient(ellipse 110px 80px at 15% 25%, rgba(130, 95, 40, 0.07) 0%, transparent 100%),
+    radial-gradient(ellipse 70px 55px at 80% 15%, rgba(115, 85, 35, 0.06) 0%, transparent 100%),
+    radial-gradient(ellipse 90px 65px at 60% 70%, rgba(125, 92, 38, 0.065) 0%, transparent 100%),
+    radial-gradient(ellipse 120px 90px at 90% 85%, rgba(135, 100, 45, 0.07) 0%, transparent 100%),
+    radial-gradient(ellipse 60px 45px at 30% 55%, rgba(120, 88, 36, 0.05) 0%, transparent 100%),
+    /* darkened, aged edges */
+    radial-gradient(ellipse at 0% 0%,    rgba(140, 100, 50, 0.28) 0%, transparent 45%),
+    radial-gradient(ellipse at 100% 0%,   rgba(125, 90, 45, 0.24) 0%, transparent 45%),
+    radial-gradient(ellipse at 0% 100%,   rgba(125, 90, 45, 0.24) 0%, transparent 45%),
+    radial-gradient(ellipse at 100% 100%, rgba(140, 100, 50, 0.28) 0%, transparent 45%),
+    /* warm glow at the center of the page */
+    radial-gradient(ellipse at 50% 45%,  rgba(255, 248, 220, 0.55) 0%, transparent 70%),
+    var(--parchment-mid, #e4d9c0);
+}
+
+/* ── Shadowed paper header band ── */
+nav {
+  padding-top: 0.4rem;
+  padding-bottom: 0.5rem;
+  background: linear-gradient(105deg, #c9bc98 0%, #d3c7a6 45%, #ccbf9d 100%);
+  border-bottom: 1px solid rgba(110, 90, 50, 0.45);
+  backdrop-filter: none;
+}
+nav .logo { color: var(--ink, #1e1a12); }
+.nav-links a { color: rgba(30, 26, 18, 0.7) !important; }
+.nav-links a:hover, .nav-links a.active { color: #8a6a1f !important; }
+
+/* ── Glowing page titles (matches "I Am") ── */
+.page-header h1 {
+  font-weight: 700;
+  font-size: 3.2rem;
+  letter-spacing: 10px;
+  color: #fff;
+  text-shadow:
+    0 0 60px rgba(201, 162, 39, 0.7),
+    0 0 120px rgba(201, 162, 39, 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* ── Middle symbol under titles / at page bottom ── */
+.title-sigil {
+  display: block;
+  width: 115px;
+  margin: 0.4rem auto 0;
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+}
+.bottom-sigil { margin: 2.5rem auto 0; }
+
+/* ── Sigil rails lining the sides ── */
+.sigil-rail {
+  position: absolute;
+  width: 155px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  align-items: center;
+  pointer-events: none;
+  overflow: hidden;
+}
+.page-content > .sigil-rail { top: 0; bottom: 2rem; }
+.page-content > .sigil-rail.left  { left: -170px; }
+.page-content > .sigil-rail.right { right: -170px; }
+
+.sigil-rail img {
+  width: 100%;
+  mix-blend-mode: multiply;
+  opacity: 0.9;
+}
+
+@media (max-width: 1360px) {
+  .sigil-rail { display: none; }
+}

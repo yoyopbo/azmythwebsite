@@ -42,24 +42,12 @@
       padding-top: 0.4rem;
       padding-bottom: 0.5rem;
       background: linear-gradient(105deg, #c9bc98 0%, #d3c7a6 45%, #ccbf9d 100%);
-      border-bottom: none;
+      border-bottom: 1px solid rgba(110, 90, 50, 0.45);
       backdrop-filter: none;
     }
     nav .logo { color: var(--ink, #1e1a12); }
     .nav-links a { color: rgba(30, 26, 18, 0.7) !important; }
     .nav-links a:hover, .nav-links a.active { color: #8a6a1f !important; }
-
-    /* torn paper edge under the header */
-    .torn-edge {
-      display: block;
-      width: 100%;
-      height: 26px;
-      margin-top: -1px;
-      position: relative;
-      z-index: 99;
-      filter: drop-shadow(0 3px 4px rgba(90, 70, 40, 0.35));
-    }
-    .torn-edge svg { display: block; width: 100%; height: 100%; }
 
     .page-content {
       padding: 0;
@@ -190,19 +178,6 @@
     </div>
   </nav>
 
-  <div class="torn-edge" aria-hidden="true">
-    <svg viewBox="0 0 1200 30" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="plum" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="#c9bc98"/>
-          <stop offset="0.45" stop-color="#d3c7a6"/>
-          <stop offset="1" stop-color="#ccbf9d"/>
-        </linearGradient>
-      </defs>
-      <path fill="url(#plum)" d="M0 0 H1200 V6 L1184 15 L1166 7 L1148 19 L1129 9 L1114 22 L1096 12 L1075 24 L1058 8 L1041 17 L1022 6 L1004 20 L988 11 L969 25 L951 13 L934 21 L916 7 L897 16 L880 26 L862 10 L845 19 L827 8 L810 23 L793 12 L774 20 L757 6 L739 17 L722 27 L704 11 L688 21 L670 9 L652 18 L635 25 L617 8 L600 15 L582 24 L565 10 L547 20 L530 7 L512 16 L495 26 L477 12 L460 22 L442 9 L425 18 L407 6 L390 24 L372 13 L355 21 L337 8 L320 17 L302 25 L285 11 L268 19 L250 7 L232 23 L215 12 L198 20 L180 9 L163 26 L145 14 L128 22 L110 8 L93 18 L75 25 L58 10 L40 19 L22 13 L8 21 L0 12 Z"/>
-    </svg>
-  </div>
-
   <main class="page-content">
 
     <div class="about-title">
@@ -226,7 +201,6 @@
         <img src="images/sigils/sigil-6.png" alt="">
         <img src="images/sigils/sigil-8.png" alt="">
         <img src="images/sigils/sigil-10.png" alt="">
-        <img src="images/sigils/sigil-12.png" alt="">
         <img src="images/sigils/sigil-14.png" alt="">
       </div>
       <div class="about-body">
